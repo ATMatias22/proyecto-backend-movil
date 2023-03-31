@@ -45,19 +45,13 @@ public class Device {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Calendar updated;
 
-    @Column(name = "FK_User")
-    private Integer userId;
-
-    @Column(name = "FK_WiFi")
-    private Integer wifiId;
-
     @OneToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_User", insertable = false )
+    @JoinColumn(name = "FK_User" )
     @JsonIgnore
     private User fkUser;
 
     @OneToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_WiFi", insertable = false )
+    @JoinColumn(name = "FK_WiFi", insertable = false, updatable = false )
     @JsonIgnore
     private WiFi fkWiFi;
 

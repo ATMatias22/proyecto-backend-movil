@@ -11,29 +11,23 @@ import lombok.Setter;
 import java.util.Calendar;
 
 @Entity
-@Table(name = "Group")
+@Table(name = "Observer")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Group {
+public class Observer {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    @Column(name="ID_Group")
-    private Long idGroup;
-
-    @Column(name = "FK_User")
-    private Long userId;
+    @Column(name="ID_Observer")
+    private Long idObserver;
 
     @ManyToOne
-    @JoinColumn(name="FK_User", insertable = false, updatable = false)
+    @JoinColumn(name="FK_User")
     private User user;
 
-    @Column(name = "FK_Device")
-    private Long deviceId;
-
     @ManyToOne
-    @JoinColumn(name="FK_Device", insertable = false, updatable = false)
+    @JoinColumn(name="FK_Device")
     private Device device;
 
     @Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="DATETIME default NOW()")

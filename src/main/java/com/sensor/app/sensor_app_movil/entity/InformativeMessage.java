@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.util.Calendar;
 
 @Entity
-@Table(name = "Group")
+@Table(name = "InformativeMessage")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,10 +22,8 @@ public class InformativeMessage {
     @Column(name="ID_InformativeMessage")
     private Long idInformativeMessage;
 
-
     @Column(name="message",columnDefinition = "TEXT", nullable = false)
     private String message;
-
 
     @Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="DATETIME default NOW()")
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -37,11 +35,8 @@ public class InformativeMessage {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Calendar updated;
 
-    @Column(name = "FK_Device", nullable = false)
-    private Long deviceId;
-
     @ManyToOne
-    @JoinColumn(name = "FK_Device", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "FK_Device", nullable = false)
     @JsonIgnore
     private Device device;
 
