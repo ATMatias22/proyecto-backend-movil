@@ -7,7 +7,7 @@ public interface IUserService {
 
     User getUserByEmail(String email);
 
-    String saveUser(User user);
+    void saveUser(User user);
 
     Integer enableUser(String email);
 

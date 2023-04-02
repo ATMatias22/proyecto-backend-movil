@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements IAuthService {
@@ -25,12 +26,10 @@ public class AuthServiceImpl implements IAuthService {
     private IUserService userService;
     @Autowired
     private JwtProvider jwtProvider;
-
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private IEmailService emailService;
-
     @Autowired
     private IConfirmationTokenService confirmationTokenService;
 
@@ -45,14 +44,24 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
+    @Transactional
     public void register(User user) {
-        String token = this.userService.saveUser(user);
+        this.userService.saveUser(user);
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                user
+        );
+        confirmationTokenService.saveConfirmationToken(
+                confirmationToken);
         String link = "http://localhost:8080/app_movil_sensor/api/auth/confirm?token="+ token;
         emailService.send(user.getEmail(), buildEmail(user.getName(),link));
 
     }
 
-
+    @Override
     @Transactional
     public String confirmToken(String token) {
 
