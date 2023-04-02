@@ -5,4 +5,6 @@ import com.sensor.app.sensor_app_movil.security.entity.User;
 public interface IAuthService {
     String login (User user);
     void register(User user);
+
+    String confirmToken(String token);
 }

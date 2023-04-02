@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
@@ -22,6 +23,7 @@ public class AuthController {
     private final static Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     private IAuthService authService;
+
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid NewUser newUser) {
@@ -44,7 +46,17 @@ public class AuthController {
         user.setPassword(loginUser.getPassword());
         String jwt = this.authService.login(user);
         return new ResponseEntity<>(new JwtDto(jwt), HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/confirm")
+    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
+        return new ResponseEntity<>(authService.confirmToken(token), HttpStatus.OK);
 
     }
+
+
+
+
 
 }

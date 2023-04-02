@@ -52,6 +52,7 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Calendar updated;
 
+    private Boolean enabled = false;
 
 
 

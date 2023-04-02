@@ -12,6 +12,8 @@ public interface IUserDao {
     Optional<User> getUserByEmail(String email);
     User saveUser(User user);
 
+    Integer enableUser(String email);
+
 
 
 }

@@ -29,4 +29,10 @@ public class UserDaoImpl implements IUserDao {
         return userRepository.save(user);
     }
 
+    @Override
+    public Integer enableUser(String email) {
+        return this.userRepository.enableUser(email);
+    }
+
+
 }
