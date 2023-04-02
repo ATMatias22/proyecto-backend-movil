@@ -17,18 +17,18 @@ public class ConfirmationTokenDaoImpl implements IConfirmationTokenDao {
     private IConfirmationTokenRepository confirmationTokenRepository;
 
     @Override
-    public Optional<ConfirmationToken> getConfirmationTokenByToken(String token) {
-        return this.confirmationTokenRepository.findByToken(token);
-    }
-
-    @Override
-    public Integer setConfirmedAt(String token, LocalDateTime confirmedAt) {
-        return this.confirmationTokenRepository.updateConfirmedAt(token,confirmedAt);
+    public Optional<ConfirmationToken> getConfirmationTokenById(String id) {
+        return this.confirmationTokenRepository.findByIdConfirmationToken(id);
     }
 
     @Override
     public void saveConfirmationToken(ConfirmationToken token) {
         this.confirmationTokenRepository.save(token);
 
+    }
+
+    @Override
+    public void deleteById(String id) {
+        this.confirmationTokenRepository.deleteByIdConfirmationToken(id);
     }
 }

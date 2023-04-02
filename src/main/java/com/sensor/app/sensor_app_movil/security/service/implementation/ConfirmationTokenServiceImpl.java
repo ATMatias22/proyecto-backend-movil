@@ -6,7 +6,6 @@ import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenServic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -21,15 +20,13 @@ public class ConfirmationTokenServiceImpl implements IConfirmationTokenService {
     }
 
     @Override
-    public Optional<ConfirmationToken> getConfirmationTokenByToken(String token) {
-        return this.confirmationTokenDao.getConfirmationTokenByToken(token);
-
-
+    public Optional<ConfirmationToken> getConfirmationTokenById(String id) {
+        return this.confirmationTokenDao.getConfirmationTokenById(id);
     }
 
     @Override
-    public Integer setConfirmedAt(String token) {
-        return confirmationTokenDao.setConfirmedAt(
-                token, LocalDateTime.now());
+    public void deleteById(String id) {
+         this.confirmationTokenDao.deleteById(id);
     }
+
 }

@@ -8,8 +8,8 @@ public interface IConfirmationTokenService {
 
     void saveConfirmationToken(ConfirmationToken token);
 
-    Optional<ConfirmationToken> getConfirmationTokenByToken(String token);
+    Optional<ConfirmationToken> getConfirmationTokenById(String id);
 
-    Integer setConfirmedAt(String token);
+    void deleteById(String id);
 
 }

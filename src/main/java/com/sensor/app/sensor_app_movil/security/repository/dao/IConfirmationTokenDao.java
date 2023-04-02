@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface IConfirmationTokenDao {
 
-    Optional<ConfirmationToken> getConfirmationTokenByToken(String token);
-
-    Integer setConfirmedAt(String  token, LocalDateTime confirmedAt);
+    Optional<ConfirmationToken> getConfirmationTokenById(String id);
 
     void saveConfirmationToken(ConfirmationToken token);
+
+    void deleteById(String id);
 }
