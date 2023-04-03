@@ -1,6 +1,7 @@
 package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 
+import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationToken;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.security.jwt.JwtProvider;
@@ -9,6 +10,7 @@ import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenServic
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,48 +48,46 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     @Transactional
     public void register(User user) {
+        User userForLogin = null;
+
+        try {
+            userForLogin = (User) user.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            throw new GeneralException(HttpStatus.INTERNAL_SERVER_ERROR, "Problemas con el servidor");
+        }
+
         this.userService.saveUser(user);
-        String token = UUID.randomUUID().toString();
+
+        String token = this.login(userForLogin);
+
+        String id = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken = new ConfirmationToken(
+                id,
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
                 user
         );
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-        String link = "http://localhost:8080/app_movil_sensor/api/auth/confirm?token="+ token;
+        String link = "http://localhost:8080/app_movil_sensor/api/auth/confirm?token="+ id;
         emailService.send(user.getEmail(), buildEmail(user.getName(),link));
-
     }
 
     @Override
     @Transactional
-    public String confirmToken(String token) {
+    public String confirmToken(String id) {
 
         ConfirmationToken confirmationToken = confirmationTokenService
-                .getConfirmationTokenByToken(token)
+                .getConfirmationTokenById(id)
                 .orElseThrow(() ->
                         new IllegalStateException("token not found"));
 
-        if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
-        }
-
-
-        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
-        }
-
-        confirmationTokenService.setConfirmedAt(token);
-
         User user = confirmationToken.getFkUser();
-
         userService.enableUser(user.getEmail());
+        this.confirmationTokenService.deleteById(id);
 
-        return "Logueado";
+        return confirmationToken.getToken();
     }
 
 

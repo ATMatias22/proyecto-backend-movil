@@ -213,6 +213,7 @@ public class GlobalExceptionHandler  {
 
         logger.info("estoy en Exception");
 
+
         HashMap<String, DetailsError> dataError = new HashMap<>();
 
         DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),

@@ -50,8 +50,8 @@ public class AuthController {
 
 
     @GetMapping(path = "/confirm")
-    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
-        return new ResponseEntity<>(authService.confirmToken(token), HttpStatus.OK);
+    public ResponseEntity<JwtDto> confirm(@RequestParam("token") String token) {
+        return new ResponseEntity<>(new JwtDto(authService.confirmToken(token)), HttpStatus.OK);
 
     }
 

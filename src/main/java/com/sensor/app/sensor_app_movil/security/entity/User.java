@@ -14,7 +14,7 @@ import java.util.Calendar;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class User implements Cloneable {
 
 
     @Id
@@ -55,5 +55,8 @@ public class User {
     private Boolean enabled = false;
 
 
-
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

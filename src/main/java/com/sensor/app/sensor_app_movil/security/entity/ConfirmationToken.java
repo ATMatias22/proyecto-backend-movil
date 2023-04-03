@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,9 +15,8 @@ public class ConfirmationToken {
 
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name="ID_ConfirmationToken")
-    private Long idConfirmationToken;
+    private String idConfirmationToken;
 
     @Column(nullable = false)
     private String token;
@@ -27,14 +25,6 @@ public class ConfirmationToken {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Argentina/Buenos_Aires")
     private LocalDateTime  createdAt;
 
-    @Column(nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Argentina/Buenos_Aires")
-    private LocalDateTime  expiresAt;
-
-    @Column()
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Argentina/Buenos_Aires")
-    private LocalDateTime  confirmedAt;
-
     @ManyToOne
     @JoinColumn(
             nullable = false,
@@ -42,13 +32,13 @@ public class ConfirmationToken {
     )
     private User fkUser;
 
-    public ConfirmationToken(String token,
+    public ConfirmationToken(String idConfirmationToken,
+                             String token,
                              LocalDateTime  createdAt,
-                             LocalDateTime  expiresAt,
                              User user) {
+        this.idConfirmationToken = idConfirmationToken;
         this.token = token;
         this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
         this.fkUser = user;
     }
 }
