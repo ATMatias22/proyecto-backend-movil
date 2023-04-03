@@ -1,13 +1,12 @@
 package com.sensor.app.sensor_app_movil.security.repository.dao.implementation;
 
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationToken;
+import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.security.repository.IConfirmationTokenRepository;
 import com.sensor.app.sensor_app_movil.security.repository.dao.IConfirmationTokenDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Optional;
 
 @Repository
@@ -25,6 +24,11 @@ public class ConfirmationTokenDaoImpl implements IConfirmationTokenDao {
     public void saveConfirmationToken(ConfirmationToken token) {
         this.confirmationTokenRepository.save(token);
 
+    }
+
+    @Override
+    public boolean existsTokenForFkUser(User user) {
+        return this.confirmationTokenRepository.existsByFkUser(user);
     }
 
     @Override

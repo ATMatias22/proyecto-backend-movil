@@ -10,6 +10,7 @@ import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenServic
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,12 +39,14 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public String login(User user) {
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtProvider.generateToken(authentication);
 
     }
+
 
     @Override
     @Transactional
@@ -58,7 +61,6 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         this.userService.saveUser(user);
-
         String token = this.login(userForLogin);
 
         String id = UUID.randomUUID().toString();

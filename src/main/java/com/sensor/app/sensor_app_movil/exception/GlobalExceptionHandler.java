@@ -1,6 +1,8 @@
 package com.sensor.app.sensor_app_movil.exception;
 
+import com.sensor.app.sensor_app_movil.exception.constants.ExceptionMessage;
 import com.sensor.app.sensor_app_movil.exception.dto.DetailsError;
+import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,21 @@ public class GlobalExceptionHandler  {
         return new ResponseEntity<>(dataError, exception.getStatus());
     }
 
+    @ExceptionHandler(UnabledAccountException.class)
+    public ResponseEntity<HashMap<String, DetailsError>> unabledAccountExceptionHandler(UnabledAccountException exception, WebRequest webRequest) {
+
+        logger.info("estoy en UnabledAccountException");
+        HashMap<String, DetailsError> dataError = new HashMap<>();
+
+        DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
+                webRequest.getDescription(false), exception.getStatus().value());
+
+        dataError.put("error", detailsError);
+
+
+        return new ResponseEntity<>(dataError, exception.getStatus());
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<HashMap<String, DetailsError>> badCredentialsException(BadCredentialsException exception,
                                                                                  WebRequest webRequest) {
@@ -52,7 +69,7 @@ public class GlobalExceptionHandler  {
 
         HashMap<String, DetailsError> dataError = new HashMap<>();
 
-        DetailsError detailsError = new DetailsError(new Date(), "Algunas de sus credenciales es incorrecta",
+        DetailsError detailsError = new DetailsError(new Date(), ExceptionMessage.BAD_CREDENTIALS,
                 webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
 
         dataError.put("error", detailsError);
@@ -67,7 +84,7 @@ public class GlobalExceptionHandler  {
 
         HashMap<String, DetailsError> dataError = new HashMap<>();
 
-        DetailsError detailsError = new DetailsError(new Date(), "Algunas de sus credenciales es incorrecta",
+        DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
                 webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
 
         dataError.put("error", detailsError);
