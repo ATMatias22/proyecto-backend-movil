@@ -47,50 +47,6 @@ public class GlobalExceptionHandler  {
         return new ResponseEntity<>(dataError, exception.getStatus());
     }
 
-    @ExceptionHandler(UnabledAccountException.class)
-    public ResponseEntity<HashMap<String, DetailsError>> unabledAccountExceptionHandler(UnabledAccountException exception, WebRequest webRequest) {
-
-        logger.info("estoy en UnabledAccountException");
-        HashMap<String, DetailsError> dataError = new HashMap<>();
-
-        DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
-                webRequest.getDescription(false), exception.getStatus().value());
-
-        dataError.put("error", detailsError);
-
-
-        return new ResponseEntity<>(dataError, exception.getStatus());
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<HashMap<String, DetailsError>> badCredentialsException(BadCredentialsException exception,
-                                                                                 WebRequest webRequest) {
-        logger.info("estoy en BadCredentialsException, esto pasa cuando el password es incorrecto");
-
-        HashMap<String, DetailsError> dataError = new HashMap<>();
-
-        DetailsError detailsError = new DetailsError(new Date(), ExceptionMessage.BAD_CREDENTIALS,
-                webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
-
-        dataError.put("error", detailsError);
-
-        return new ResponseEntity<>(dataError, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ResponseEntity<HashMap<String, DetailsError>> internalAuthenticationServiceException(InternalAuthenticationServiceException exception,
-                                                                                 WebRequest webRequest) {
-        logger.info("estoy en InternalAuthenticationServiceException, esto pasa cuando el usuario no existe");
-
-        HashMap<String, DetailsError> dataError = new HashMap<>();
-
-        DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
-                webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
-
-        dataError.put("error", detailsError);
-
-        return new ResponseEntity<>(dataError, HttpStatus.UNAUTHORIZED);
-    }
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<HashMap<String, DetailsError>> jwtExceptionHandler(JwtException e, WebRequest webRequest) {
@@ -121,22 +77,6 @@ public class GlobalExceptionHandler  {
         dataError.put("error", detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.FORBIDDEN);
-    }
-
-    // tiene q  ver con MyAccessDeniedHandler
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<HashMap<String, DetailsError>> authenticationExceptionHandler(AuthenticationException exception, WebRequest webRequest) {
-
-        logger.info("estoy en AuthenticationException");
-
-        HashMap<String, DetailsError> dataError = new HashMap<>();
-
-        DetailsError detailsError = new DetailsError(new Date(), "Algunas de sus credenciales es incorrecta",
-                webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
-
-        dataError.put("error", detailsError);
-
-        return new ResponseEntity<>(dataError, HttpStatus.UNAUTHORIZED);
     }
 
 

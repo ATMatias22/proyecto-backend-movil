@@ -1,5 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.jwt;
 
+import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.service.implementation.UserDetailsServiceImpl;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -52,8 +54,8 @@ public class JwtTokenFilter  extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
 
-        }catch (JwtException | InternalAuthenticationServiceException ji){
-            logger.info(ji.getMessage());
+        }catch (JwtException | AuthenticationException ja){
+            logger.info(ja.getMessage());
             resolver.resolveException(request, response, null, new JwtException("Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
         }catch (Exception ex){
             logger.info(ex.getMessage());

@@ -29,20 +29,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         User user = null;
-
         try {
-            user = userService.getUserByEmail(email);
-            if(!user.getEnabled()){
-                if(this.confirmationTokenService.existsTokenForFkUser(user)){
-                    throw new UnabledAccountException(HttpStatus.BAD_REQUEST, ExceptionMessage.UNABLED_ACCOUNT);
-                }
-            }
-        } catch (GeneralException ge) {
-            throw new GeneralException(ge.getStatus(), ExceptionMessage.BAD_CREDENTIALS);
+             user = userService.getUserByEmail(email);
+        }catch (GeneralException ge){
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, ExceptionMessage.BAD_CREDENTIALS);
         }
 
+        if (!user.getEnabled()) {
+            if (this.confirmationTokenService.existsTokenForFkUser(user)) {
+                throw new UnabledAccountException(HttpStatus.UNAUTHORIZED, ExceptionMessage.UNABLED_ACCOUNT);
+            }
+        }
 
         return MainUser.build(user);
     }
