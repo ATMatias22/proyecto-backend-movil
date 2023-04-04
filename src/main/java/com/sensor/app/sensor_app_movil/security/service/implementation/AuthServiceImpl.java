@@ -2,18 +2,25 @@ package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
+import com.sensor.app.sensor_app_movil.exception.GlobalExceptionHandler;
+import com.sensor.app.sensor_app_movil.exception.constants.ExceptionMessage;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationToken;
 import com.sensor.app.sensor_app_movil.security.entity.User;
+import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.jwt.JwtProvider;
 import com.sensor.app.sensor_app_movil.security.service.IAuthService;
 import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenService;
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,15 +42,26 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private IConfirmationTokenService confirmationTokenService;
 
+    private final static Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Override
     public String login(User user) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtProvider.generateToken(authentication);
+
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return jwtProvider.generateToken(authentication);
+        } catch (InternalAuthenticationServiceException ie) {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, ie.getMessage());
+        } catch (AuthenticationException ae) {
+            logger.warn(ae.getMessage());
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, ExceptionMessage.BAD_CREDENTIALS);
+        }
+
 
     }
+
 
     @Override
     @Transactional
@@ -70,8 +88,8 @@ public class AuthServiceImpl implements IAuthService {
         );
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
-        String link = "http://localhost:8080/app_movil_sensor/api/auth/confirm?token="+ id;
-        emailService.send(user.getEmail(), buildEmail(user.getName(),link));
+        String link = "http://localhost:8080/app_movil_sensor/api/auth/confirm?token=" + id;
+        emailService.send(user.getEmail(), buildEmail(user.getName(), link));
     }
 
     @Override
@@ -89,7 +107,6 @@ public class AuthServiceImpl implements IAuthService {
 
         return confirmationToken.getToken();
     }
-
 
 
     private String buildEmail(String name, String link) {

@@ -35,13 +35,6 @@ public class MainSecurity  {
         return new JwtTokenFilter();
     }
 
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(){
-        DaoAuthenticationProvider dap = new DaoAuthenticationProvider();
-        dap.setUserDetailsService(userDetailsServiceImpl);
-        dap.setPasswordEncoder(passwordEncoder());
-        return dap;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -65,6 +58,8 @@ public class MainSecurity  {
         return http.build();
     }
 
+
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http
@@ -72,6 +67,17 @@ public class MainSecurity  {
                 .authenticationProvider(daoAuthenticationProvider())
                 .build();
     }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider(){
+        DaoAuthenticationProvider dap = new DaoAuthenticationProvider();
+        dap.setUserDetailsService(userDetailsServiceImpl);
+        dap.setPasswordEncoder(passwordEncoder());
+        return dap;
+    }
+
+
+
 
 
 
