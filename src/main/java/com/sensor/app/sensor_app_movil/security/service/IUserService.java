@@ -11,4 +11,6 @@ public interface IUserService {
 
     Integer enableUser(String email);
 
+    void modifyPassword(String oldPassword, String newPassword);
+
 }
