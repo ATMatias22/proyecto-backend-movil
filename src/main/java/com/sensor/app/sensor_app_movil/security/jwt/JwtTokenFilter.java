@@ -1,5 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.jwt;
 
+import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.service.implementation.UserDetailsServiceImpl;
 import io.jsonwebtoken.JwtException;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -56,6 +58,9 @@ public class JwtTokenFilter  extends OncePerRequestFilter {
         }catch (JwtException | AuthenticationException ja){
             logger.info(ja.getMessage());
             resolver.resolveException(request, response, null, new JwtException("Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
+        }catch (GeneralException ex){
+            logger.info(ex.getMessage());
+            resolver.resolveException(request, response, null, new GeneralException(HttpStatus.UNAUTHORIZED, "Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
         }catch (Exception ex){
             logger.info(ex.getMessage());
             resolver.resolveException(request, response, null, new Exception("Problemas en el servidor"));

@@ -1,8 +1,10 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
+import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyDataRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyPasswordRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.NewUser;
 import com.sensor.app.sensor_app_movil.security.entity.User;
+import com.sensor.app.sensor_app_movil.security.jwt.dto.JwtDto;
 import com.sensor.app.sensor_app_movil.security.service.IAuthService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import com.sensor.app.sensor_app_movil.utils.date.ConvertStringToCalendar;
@@ -30,6 +32,29 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity modifyPassword(@RequestBody @Valid ModifyPasswordRequest mpr) {
         this.userService.modifyPassword(mpr.getPassword(), mpr.getNewPassword());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PutMapping("/modify-data")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity modifyData(@RequestBody @Valid ModifyDataRequest mdr) {
+
+        User user = new User();
+        user.setName(mdr.getName());
+        user.setLastname(mdr.getLastname());
+        user.setNationality(mdr.getNationality());
+        user.setDateOfBirth(ConvertStringToCalendar.getCalendar(mdr.getDateOfBirth()));
+        user.setEmail(mdr.getEmail());
+        this.userService.modifyData(user);
+
+        return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
+
+
+    @GetMapping(path = "/confirm-data")
+    public ResponseEntity confirm(@RequestParam("token") String token) {
+        this.userService.confirmTokenEmailChange(token);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

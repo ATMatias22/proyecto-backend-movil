@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.Optional;
 
-public interface IConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
+public interface IConfirmationTokenRepository extends JpaRepository<ConfirmationToken, String> {
 
 
     Optional<ConfirmationToken> findByIdConfirmationToken(String id);

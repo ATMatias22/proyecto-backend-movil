@@ -13,4 +13,8 @@ public interface IUserService {
 
     void modifyPassword(String oldPassword, String newPassword);
 
+    void confirmTokenEmailChange(String token);
+
+    void modifyData(User modifiedUser);
+
 }
