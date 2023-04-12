@@ -21,13 +21,13 @@ public class EmailServiceImpl implements IEmailService {
     private JavaMailSender mailSender;
 
     @Override
-    public void send(String to, String email) {
+    public void send(String subject, String to, String email) {
 
         try {
 
             MimeMessage message = mailSender.createMimeMessage();
             message.setRecipients(Message.RecipientType.TO, to);
-            message.setSubject("Hola probando");
+            message.setSubject(subject);
             message.setContent(email,"text/html");
             mailSender.send(message);
 

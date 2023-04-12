@@ -16,5 +16,6 @@ public interface IUserService {
     void confirmTokenEmailChange(String token);
 
     void modifyData(User modifiedUser);
+    void confirmTokenPasswordChange (String token);
 
 }
