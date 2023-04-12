@@ -35,6 +35,12 @@ public class UserController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping(path = "/confirm-password")
+    public ResponseEntity confirmPassword(@RequestParam("token") String token) {
+        this.userService.confirmTokenPasswordChange(token);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 
     @PutMapping("/modify-data")
     @PreAuthorize("isAuthenticated()")
@@ -57,5 +63,8 @@ public class UserController {
         this.userService.confirmTokenEmailChange(token);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+
+
 
 }
