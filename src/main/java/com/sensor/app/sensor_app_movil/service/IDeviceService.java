@@ -9,6 +9,9 @@ public interface IDeviceService {
     void bindUser(String deviceCode, String password);
 
     Device getByDeviceCode(String deviceCode);
+    void addObserver(String email, String deviceCode);
+
+    void confirmationInvitation(String token);
 
 
 
