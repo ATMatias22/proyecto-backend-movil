@@ -15,6 +15,7 @@ import java.util.Calendar;
 @Getter
 @Setter
 @NoArgsConstructor
+/*Invitado*/
 public class Observer {
 
     @Id
@@ -24,11 +25,11 @@ public class Observer {
 
     @ManyToOne
     @JoinColumn(name="FK_User")
-    private User user;
+    private User fkUser;
 
     @ManyToOne
     @JoinColumn(name="FK_Device")
-    private Device device;
+    private Device fkDevice;
 
     @Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="DATETIME default NOW()")
     @Temporal(value = TemporalType.TIMESTAMP)

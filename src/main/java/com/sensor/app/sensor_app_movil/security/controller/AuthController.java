@@ -52,7 +52,6 @@ public class AuthController {
     @GetMapping(path = "/confirm")
     public ResponseEntity<JwtDto> confirm(@RequestParam("token") String token) {
         return new ResponseEntity<>(new JwtDto(authService.confirmToken(token)), HttpStatus.OK);
-
     }
 
 
