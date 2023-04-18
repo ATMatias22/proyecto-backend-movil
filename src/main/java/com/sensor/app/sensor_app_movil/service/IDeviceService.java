@@ -6,7 +6,7 @@ import com.sensor.app.sensor_app_movil.entity.Device;
 public interface IDeviceService {
 
 
-    void bindUser(String deviceCode, String password);
+    void linkUser(String deviceCode, String password);
 
     Device getByDeviceCode(String deviceCode);
     void addObserver(String email, String deviceCode);

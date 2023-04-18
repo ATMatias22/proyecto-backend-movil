@@ -6,7 +6,6 @@ import com.sensor.app.sensor_app_movil.entity.Observer;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.repository.dao.IDeviceDao;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
-import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenPasswordChange;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.service.IConfirmationTokenInvitationService;
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
@@ -48,7 +47,7 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public void bindUser(String deviceCode, String password) {
+    public void linkUser(String deviceCode, String password) {
 
         Device device = this.getByDeviceCode(deviceCode);
         if (!passwordEncoder.matches(password, device.getPassword())) {
@@ -80,7 +79,11 @@ public class DeviceServiceImpl implements IDeviceService {
 
         Device device = this.getByDeviceCode(deviceCode);
 
-        if (device.getFkUser().getIdUser() != mu.getId()) {
+        if(device.getFkUser() == null){
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede invitar a un usuario si no es el dueño del dispositivo");
+        }
+
+        if (device.getFkUser().getIdUser() != mu.getId() ) {
             throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede invitar a un usuario si no es el dueño del dispositivo");
         }
 
@@ -107,7 +110,7 @@ public class DeviceServiceImpl implements IDeviceService {
             );
             this.confirmationTokenInvitationService.saveConfirmationTokenInvitation(cti);
         }
-        String link = "http://localhost:8080/app_movil_sensor/api/user/confirm-invitation?token=" + token;
+        String link = "http://localhost:8080/app_movil_sensor/api/device/confirm-invitation?token=" + token;
         emailService.send("Invitacion al dispositivo", email, buildEmailForConfirmInvitation(link, mu.getUsername()));
 
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BindDeviceRequest {
+public class LinkDeviceRequest {
 
 
     @NotBlank(message = "El codigo no puede ser nulo ni vacio")

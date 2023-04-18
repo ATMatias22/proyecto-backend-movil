@@ -2,11 +2,8 @@ package com.sensor.app.sensor_app_movil.controller;
 
 
 import com.sensor.app.sensor_app_movil.dto.device.AddObserverRequest;
-import com.sensor.app.sensor_app_movil.dto.device.BindDeviceRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.NewUser;
-import com.sensor.app.sensor_app_movil.security.entity.User;
+import com.sensor.app.sensor_app_movil.dto.device.LinkDeviceRequest;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
-import com.sensor.app.sensor_app_movil.utils.date.ConvertStringToCalendar;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +25,10 @@ public class DeviceController {
     private IDeviceService deviceService;
 
 
-    @PutMapping("/bind")
+    @PutMapping("/link-user")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity bindUser(@RequestBody @Valid  BindDeviceRequest bdr) {
-        this.deviceService.bindUser(bdr.getCode(), bdr.getPassword());
+    public ResponseEntity linkUser(@RequestBody @Valid LinkDeviceRequest ldr) {
+        this.deviceService.linkUser(ldr.getCode(), ldr.getPassword());
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
