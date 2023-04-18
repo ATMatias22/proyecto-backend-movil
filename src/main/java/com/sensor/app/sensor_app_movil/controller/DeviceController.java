@@ -47,4 +47,11 @@ public class DeviceController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping("/{deviceCode}/unlink-observer")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity unlinkObserver(@PathVariable("deviceCode") String deviceCode ) {
+        this.deviceService.unlinkObserver(deviceCode);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 }

@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.UUID;
+
 
 
 @Service
@@ -116,6 +116,14 @@ public class DeviceServiceImpl implements IDeviceService {
 
     }
 
+    @Override
+    public void unlinkObserver(String deviceCode) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.userService.getUserByEmail(mu.getUsername());
+        Device device  = this.getByDeviceCode(deviceCode);
+        Observer observer = this.observerService.getObserverByUserAndDevice(user,device);
+        this.observerService.delete(observer);
+    }
 
     @Transactional
     @Override
@@ -131,6 +139,9 @@ public class DeviceServiceImpl implements IDeviceService {
         this.observerService.save(obs);
         this.confirmationTokenInvitationService.deleteByToken(token);
     }
+
+
+
 
 
     private String buildEmailForConfirmInvitation(String link, String email) {

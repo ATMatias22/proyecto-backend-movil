@@ -11,6 +11,8 @@ public interface IDeviceService {
     Device getByDeviceCode(String deviceCode);
     void addObserver(String email, String deviceCode);
 
+    void unlinkObserver(String deviceCode);
+
     void confirmationInvitation(String token);
 
 

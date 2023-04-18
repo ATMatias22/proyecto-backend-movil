@@ -25,7 +25,16 @@ public class ObserverServiceImpl implements IObserverService {
 
     @Override
     public void save(Observer observer) {
-
         this.observerDao.save(observer);
+    }
+
+    @Override
+    public void delete(Observer observer) {
+        this.observerDao.delete(observer);
+    }
+
+    @Override
+    public Observer getObserverByUserAndDevice(User user, Device device) {
+        return this.observerDao.getObserverByUserAndDevice(user,device).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el invitado"));
     }
 }

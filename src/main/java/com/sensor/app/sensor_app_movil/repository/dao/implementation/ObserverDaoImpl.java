@@ -8,6 +8,8 @@ import com.sensor.app.sensor_app_movil.security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 public class ObserverDaoImpl implements IObserverDao {
@@ -23,5 +25,15 @@ public class ObserverDaoImpl implements IObserverDao {
     @Override
     public void save(Observer observer) {
         this.observerRepository.save(observer);
+    }
+
+    @Override
+    public void delete(Observer observer) {
+        this.observerRepository.delete(observer);
+    }
+
+    @Override
+    public Optional<Observer> getObserverByUserAndDevice(User user, Device device) {
+        return this.observerRepository.findByFkUserAndFkDevice(user,device);
     }
 }
