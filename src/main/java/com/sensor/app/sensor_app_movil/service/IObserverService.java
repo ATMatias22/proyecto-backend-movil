@@ -8,4 +8,9 @@ public interface IObserverService {
 
     boolean existsByUserAndDevice(User fkUser, Device fkDevice);
     void save (Observer observer);
+
+    void delete (Observer observer);
+
+    Observer getObserverByUserAndDevice(User user, Device device);
+
 }
