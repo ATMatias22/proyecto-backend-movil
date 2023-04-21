@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-
 @Service
 public class DeviceServiceImpl implements IDeviceService {
 
@@ -79,11 +78,11 @@ public class DeviceServiceImpl implements IDeviceService {
 
         Device device = this.getByDeviceCode(deviceCode);
 
-        if(device.getFkUser() == null){
+        if (device.getFkUser() == null) {
             throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede invitar a un usuario si no es el dueño del dispositivo");
         }
 
-        if (device.getFkUser().getIdUser() != mu.getId() ) {
+        if (device.getFkUser().getIdUser() != mu.getId()) {
             throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede invitar a un usuario si no es el dueño del dispositivo");
         }
 
@@ -120,8 +119,8 @@ public class DeviceServiceImpl implements IDeviceService {
     public void unlinkObserver(String deviceCode) {
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = this.userService.getUserByEmail(mu.getUsername());
-        Device device  = this.getByDeviceCode(deviceCode);
-        Observer observer = this.observerService.getObserverByUserAndDevice(user,device);
+        Device device = this.getByDeviceCode(deviceCode);
+        Observer observer = this.observerService.getObserverByUserAndDevice(user, device);
         this.observerService.delete(observer);
     }
 
@@ -140,8 +139,23 @@ public class DeviceServiceImpl implements IDeviceService {
         this.confirmationTokenInvitationService.deleteByToken(token);
     }
 
+    @Override
+    public void deleteObserver(String deviceCode, String deletedUserEmail) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+        User userDeleted = this.userService.getUserByEmail(deletedUserEmail);
 
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede eliminar a un invitado si no es el dueño del dispositivo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, "Este dispositivo no tiene dueño");
+        }
 
+        Observer observer = this.observerService.getObserverByUserAndDevice(userDeleted, device);
+        this.observerService.delete(observer);
+    }
 
 
     private String buildEmailForConfirmInvitation(String link, String email) {

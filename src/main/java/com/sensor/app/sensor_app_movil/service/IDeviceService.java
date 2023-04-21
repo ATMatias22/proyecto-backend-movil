@@ -15,6 +15,8 @@ public interface IDeviceService {
 
     void confirmationInvitation(String token);
 
+    void deleteObserver(String deviceCode, String deletedUserEmail);
+
 
 
 
