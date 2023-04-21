@@ -54,4 +54,10 @@ public class DeviceController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping("/{deviceCode}/user/{email}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity unlinkObserver(@PathVariable("deviceCode") String deviceCode,@PathVariable("email") String email ) {
+        this.deviceService.deleteObserver(deviceCode, email);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }
