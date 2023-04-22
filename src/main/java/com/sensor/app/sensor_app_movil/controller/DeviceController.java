@@ -60,4 +60,15 @@ public class DeviceController {
         this.deviceService.deleteObserver(deviceCode, email);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+
+    @DeleteMapping("/{deviceCode}/clear-history")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity clearHistory(@PathVariable("deviceCode") String deviceCode ) {
+        this.deviceService.clearHistory(deviceCode);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+
+
 }

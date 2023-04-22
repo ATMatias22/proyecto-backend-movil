@@ -38,7 +38,7 @@ public class InformativeMessage {
     @ManyToOne
     @JoinColumn(name = "FK_Device", nullable = false)
     @JsonIgnore
-    private Device device;
+    private Device fkDevice;
 
 
 

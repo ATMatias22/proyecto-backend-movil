@@ -17,6 +17,8 @@ public interface IDeviceService {
 
     void deleteObserver(String deviceCode, String deletedUserEmail);
 
+    void clearHistory(String deviceCode);
+
 
 
 

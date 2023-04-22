@@ -11,6 +11,7 @@ import com.sensor.app.sensor_app_movil.service.IConfirmationTokenInvitationServi
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
+import com.sensor.app.sensor_app_movil.service.IInformativeMessageService;
 import com.sensor.app.sensor_app_movil.service.IObserverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -36,9 +37,11 @@ public class DeviceServiceImpl implements IDeviceService {
     private IObserverService observerService;
     @Autowired
     private IEmailService emailService;
-
     @Autowired
     private IConfirmationTokenInvitationService confirmationTokenInvitationService;
+
+    @Autowired
+    private IInformativeMessageService informativeMessageService;
 
 
     public DeviceServiceImpl(@Lazy PasswordEncoder passwordEncoder) {
@@ -155,6 +158,23 @@ public class DeviceServiceImpl implements IDeviceService {
 
         Observer observer = this.observerService.getObserverByUserAndDevice(userDeleted, device);
         this.observerService.delete(observer);
+    }
+
+    @Transactional
+    @Override
+    public void clearHistory(String deviceCode) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede vaciar el chat de un invitado si no es el dueño del dispositivo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, "Este dispositivo no tiene dueño");
+        }
+
+        this.informativeMessageService.deleteByFkDevice(device);
+
     }
 
 
