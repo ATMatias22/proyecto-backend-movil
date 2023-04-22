@@ -13,4 +13,6 @@ public interface IObserverService {
 
     Observer getObserverByUserAndDevice(User user, Device device);
 
+    void deleteByFkDevice(Device fkDevice);
+
 }
