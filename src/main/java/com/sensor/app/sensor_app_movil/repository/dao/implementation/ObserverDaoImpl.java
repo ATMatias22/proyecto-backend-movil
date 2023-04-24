@@ -36,4 +36,9 @@ public class ObserverDaoImpl implements IObserverDao {
     public Optional<Observer> getObserverByUserAndDevice(User user, Device device) {
         return this.observerRepository.findByFkUserAndFkDevice(user,device);
     }
+
+    @Override
+    public void deleteByFkDevice(Device fkDevice) {
+        this.observerRepository.deleteByFkDevice(fkDevice);
+    }
 }

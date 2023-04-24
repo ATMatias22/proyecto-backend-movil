@@ -37,4 +37,9 @@ public class ObserverServiceImpl implements IObserverService {
     public Observer getObserverByUserAndDevice(User user, Device device) {
         return this.observerDao.getObserverByUserAndDevice(user,device).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el invitado"));
     }
+
+    @Override
+    public void deleteByFkDevice(Device fkDevice) {
+        this.observerDao.deleteByFkDevice(fkDevice);
+    }
 }

@@ -16,4 +16,6 @@ public interface IObserverDao{
 
     Optional<Observer> getObserverByUserAndDevice(User user, Device device);
 
+    void deleteByFkDevice(Device fkDevice);
+
 }

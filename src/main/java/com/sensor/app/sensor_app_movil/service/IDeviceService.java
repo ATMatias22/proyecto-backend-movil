@@ -19,6 +19,8 @@ public interface IDeviceService {
 
     void clearHistory(String deviceCode);
 
+    void deleteDeviceFromUser(String deviceCode);
+
 
 
 

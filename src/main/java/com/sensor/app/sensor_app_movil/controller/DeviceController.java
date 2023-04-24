@@ -70,5 +70,12 @@ public class DeviceController {
     }
 
 
+    @DeleteMapping("/{deviceCode}/delete-owner")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity deleteDeviceFromUser(@PathVariable("deviceCode") String deviceCode ) {
+        this.deviceService.deleteDeviceFromUser(deviceCode);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 
 }

@@ -176,6 +176,29 @@ public class DeviceServiceImpl implements IDeviceService {
         this.informativeMessageService.deleteByFkDevice(device);
 
     }
+    @Transactional
+    @Override
+    public void deleteDeviceFromUser(String deviceCode){
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede vaciar el chat de un invitado si no es el dueño del dispositivo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, "Este dispositivo no tiene dueño");
+        }
+
+        device.setFkUser(null);
+        this.informativeMessageService.deleteByFkDevice(device);
+        this.observerService.deleteByFkDevice(device);
+        this.deviceDao.save(device);
+
+    }
+
+
+
+
 
 
     private String buildEmailForConfirmInvitation(String link, String email) {
