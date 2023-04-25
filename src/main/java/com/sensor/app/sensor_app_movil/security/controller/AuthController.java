@@ -1,5 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
+import com.sensor.app.sensor_app_movil.security.dto.userDTO.ConfirmRegisterUser;
 import com.sensor.app.sensor_app_movil.security.jwt.dto.JwtDto;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.LoginUser;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.NewUser;
@@ -49,9 +50,9 @@ public class AuthController {
     }
 
 
-    @GetMapping(path = "/confirm")
-    public ResponseEntity<JwtDto> confirm(@RequestParam("token") String token) {
-        return new ResponseEntity<>(new JwtDto(authService.confirmToken(token)), HttpStatus.OK);
+    @PostMapping(path = "/confirm")
+    public ResponseEntity<JwtDto> confirm(@RequestBody ConfirmRegisterUser cru) {
+        return new ResponseEntity<>(new JwtDto(authService.confirmToken(cru.getToken())), HttpStatus.OK);
     }
 
 
