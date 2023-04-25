@@ -2,10 +2,7 @@ package com.sensor.app.sensor_app_movil.security.controller;
 
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyDataRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyPasswordRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.NewUser;
 import com.sensor.app.sensor_app_movil.security.entity.User;
-import com.sensor.app.sensor_app_movil.security.jwt.dto.JwtDto;
-import com.sensor.app.sensor_app_movil.security.service.IAuthService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import com.sensor.app.sensor_app_movil.utils.date.ConvertStringToCalendar;
 import jakarta.validation.Valid;
