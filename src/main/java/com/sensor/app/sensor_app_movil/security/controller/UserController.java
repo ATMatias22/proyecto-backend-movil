@@ -1,8 +1,11 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
+import com.sensor.app.sensor_app_movil.security.dto.userDTO.ConfirmRegisterUser;
+import com.sensor.app.sensor_app_movil.security.dto.userDTO.DeleteUser;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyDataRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyPasswordRequest;
 import com.sensor.app.sensor_app_movil.security.entity.User;
+import com.sensor.app.sensor_app_movil.security.jwt.dto.JwtDto;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import com.sensor.app.sensor_app_movil.utils.date.ConvertStringToCalendar;
 import jakarta.validation.Valid;
@@ -60,6 +63,16 @@ public class UserController {
         this.userService.confirmTokenEmailChange(token);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+
+    @PostMapping("/delete-user")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity confirm(@RequestBody DeleteUser du) {
+        this.userService.deleteUser(du.getPassword());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+    }
+
 
 
 

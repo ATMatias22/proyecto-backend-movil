@@ -18,4 +18,6 @@ public interface IUserService {
     void modifyData(User modifiedUser);
     void confirmTokenPasswordChange (String token);
 
+    void deleteUser(String password);
+
 }

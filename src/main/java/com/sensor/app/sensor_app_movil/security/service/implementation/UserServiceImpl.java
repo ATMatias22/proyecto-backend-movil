@@ -1,6 +1,7 @@
 package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 
+import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenEmailChange;
@@ -8,6 +9,7 @@ import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenPassword
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.security.repository.dao.IUserDao;
 import com.sensor.app.sensor_app_movil.security.service.*;
+import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -31,13 +33,14 @@ public class UserServiceImpl implements IUserService {
     private IEmailService emailService;
     @Autowired
     private IConfirmationTokenEmailChangeService confirmationTokenEmailChangeService;
-
     @Autowired
     private IConfirmationTokenPasswordChangeService confirmationTokenPasswordChangeService;
+    private IDeviceService deviceService;
 
     //agrego asi la dependencia porque sino me da una dependencia circular, entre la clase MainSecurity, UserDetailServiceImpl, y esta clase
-    public UserServiceImpl(@Lazy PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(@Lazy PasswordEncoder passwordEncoder, @Lazy IDeviceService deviceService) {
         this.passwordEncoder = passwordEncoder;
+        this.deviceService = deviceService;
     }
 
     @Override
@@ -177,6 +180,21 @@ public class UserServiceImpl implements IUserService {
         this.userDao.saveUser(user);
 
         this.confirmationTokenPasswordChangeService.deleteByToken(token);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String password) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.getUserByEmail(mu.getUsername());
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "La contraseña no es la del usuario logueado");
+        }
+
+        this.deviceService.deleteAllWhenDeleteUser(user);
+        this.userDao.deleteUser(user.getIdUser());
+
     }
 
 

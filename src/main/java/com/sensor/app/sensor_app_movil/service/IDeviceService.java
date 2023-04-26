@@ -2,6 +2,7 @@ package com.sensor.app.sensor_app_movil.service;
 
 
 import com.sensor.app.sensor_app_movil.entity.Device;
+import com.sensor.app.sensor_app_movil.security.entity.User;
 
 public interface IDeviceService {
 
@@ -20,6 +21,8 @@ public interface IDeviceService {
     void clearHistory(String deviceCode);
 
     void deleteDeviceFromUser(String deviceCode);
+
+    void deleteAllWhenDeleteUser(User user);
 
 
 
