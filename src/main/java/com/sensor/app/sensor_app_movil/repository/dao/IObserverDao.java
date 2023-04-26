@@ -18,4 +18,6 @@ public interface IObserverDao{
 
     void deleteByFkDevice(Device fkDevice);
 
+    void deleteAllByFkUser(User fkUser);
+
 }

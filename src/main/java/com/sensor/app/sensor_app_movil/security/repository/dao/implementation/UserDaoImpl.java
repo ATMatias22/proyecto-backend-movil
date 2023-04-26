@@ -16,7 +16,7 @@ public class UserDaoImpl implements IUserDao {
 
 
     @Override
-    public Optional<User> getUser(Integer id) {
+    public Optional<User> getUser(Long id) {
         return userRepository.findById(id);
     }
 
@@ -32,6 +32,11 @@ public class UserDaoImpl implements IUserDao {
     @Override
     public Integer enableUser(String email) {
         return this.userRepository.enableUser(email);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        this.userRepository.deleteById(id);
     }
 
 

@@ -15,5 +15,6 @@ public interface IObserverRepository extends JpaRepository<Observer, Long> {
     Optional<Observer> findByFkUserAndFkDevice(User fkUser, Device fkDevice);
 
     void deleteByFkDevice(Device fkDevice);
+    void deleteByFkUser(User fkUser);
 
 }

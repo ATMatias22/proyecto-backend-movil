@@ -15,4 +15,6 @@ public interface IObserverService {
 
     void deleteByFkDevice(Device fkDevice);
 
+    void deleteAllByFkUser(User fkUser);
+
 }

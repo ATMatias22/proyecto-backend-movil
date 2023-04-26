@@ -7,12 +7,14 @@ import java.util.Optional;
 
 public interface IUserDao {
 
-    Optional<User> getUser(Integer id);
+    Optional<User> getUser(Long id);
 
     Optional<User> getUserByEmail(String email);
     User saveUser(User user);
 
     Integer enableUser(String email);
+
+    void deleteUser(Long id);
 
 
 

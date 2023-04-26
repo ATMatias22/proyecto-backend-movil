@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -196,9 +197,24 @@ public class DeviceServiceImpl implements IDeviceService {
 
     }
 
+    @Override
+    @Transactional
+    public void deleteAllWhenDeleteUser(User user) {
 
+        List<Device> devices = this.deviceDao.getAllByFkUser(user);
 
+        devices.forEach(device -> {
+            this.informativeMessageService.deleteByFkDevice(device);
+            device.setFkUser(null);
+            this.deviceDao.save(device);
+            //elimina a los usuarios que pertenecen a un dispositivo donde el usuario a eliminar es dueño
+            this.observerService.deleteByFkDevice(device);
+        });
 
+        //elimina a todos los usuarios donde es invitado
+        this.observerService.deleteAllByFkUser(user);
+
+    }
 
 
     private String buildEmailForConfirmInvitation(String link, String email) {
