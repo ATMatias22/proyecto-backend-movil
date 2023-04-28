@@ -27,6 +27,7 @@ public class NewUser {
     private String email;
 
     @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z]).{8,}$", message = " La password debe tener un mínimo de 8 caracteres, de los cuales debe haber al menos una mayúscula y un número")
+    @NotNull(message = "El email no puede ser nulo")
     private String password;
 
     @NotBlank(message = "La nacionalidad no puede ser nulo ni vacio")
