@@ -71,7 +71,7 @@ public class DeviceController {
 
     @DeleteMapping("/{deviceCode}/user/{email}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity unlinkObserver(@PathVariable("deviceCode") String deviceCode,@PathVariable("email") String email ) {
+    public ResponseEntity deleteObserver(@PathVariable("deviceCode") String deviceCode,@PathVariable("email") String email ) {
         this.deviceService.deleteObserver(deviceCode, email);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
