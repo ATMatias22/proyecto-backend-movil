@@ -1,7 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 
-import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenEmailChange;

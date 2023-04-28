@@ -3,6 +3,9 @@ package com.sensor.app.sensor_app_movil.controller;
 
 import com.sensor.app.sensor_app_movil.dto.device.AddObserverRequest;
 import com.sensor.app.sensor_app_movil.dto.device.LinkDeviceRequest;
+import com.sensor.app.sensor_app_movil.dto.device.OwnDevicesResponse;
+import com.sensor.app.sensor_app_movil.entity.Device;
+import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -12,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/device")
@@ -24,6 +30,15 @@ public class DeviceController {
     @Autowired
     private IDeviceService deviceService;
 
+    @Autowired
+    private DeviceMapper deviceMapper;
+
+    @GetMapping("/own")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<OwnDevicesResponse>> getDeviceOwn(@RequestParam(name = "page", defaultValue = "0") int page) {
+       List<OwnDevicesResponse> odr = this.deviceService.getAllByFkUser(page).stream().map(device -> deviceMapper.toOwnDevicesResponse(device)).collect(Collectors.toList());
+        return new ResponseEntity<>(odr, HttpStatus.OK);
+    }
 
     @PutMapping("/link-user")
     @PreAuthorize("isAuthenticated()")

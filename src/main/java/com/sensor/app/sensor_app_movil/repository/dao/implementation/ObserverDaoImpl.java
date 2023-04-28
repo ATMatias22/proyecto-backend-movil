@@ -46,4 +46,9 @@ public class ObserverDaoImpl implements IObserverDao {
     public void deleteAllByFkUser(User fkUser) {
         this.observerRepository.deleteByFkUser(fkUser);
     }
+
+    @Override
+    public int countByDevice(Device fkDevice) {
+        return this.observerRepository.countByFkDevice(fkDevice);
+    }
 }
