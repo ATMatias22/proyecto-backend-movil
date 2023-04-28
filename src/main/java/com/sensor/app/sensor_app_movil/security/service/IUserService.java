@@ -2,6 +2,8 @@ package com.sensor.app.sensor_app_movil.security.service;
 
 import com.sensor.app.sensor_app_movil.security.entity.User;
 
+
+
 public interface IUserService {
 
 
@@ -17,7 +19,10 @@ public interface IUserService {
 
     void modifyData(User modifiedUser);
     void confirmTokenPasswordChange (String token);
-
     void deleteUser(String password);
+
+    User getUserLoggedIn();
+
+
 
 }
