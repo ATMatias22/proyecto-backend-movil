@@ -16,6 +16,8 @@ public interface IUserDao {
 
     void deleteUser(Long id);
 
+    Optional<User> getUserById(Long id);
+
 
 
 }

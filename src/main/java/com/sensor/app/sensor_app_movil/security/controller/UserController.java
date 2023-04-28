@@ -1,11 +1,9 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.ConfirmRegisterUser;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.DeleteUser;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyDataRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyPasswordRequest;
+import com.sensor.app.sensor_app_movil.security.dto.userDTO.*;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.security.jwt.dto.JwtDto;
+import com.sensor.app.sensor_app_movil.security.mappers.UserMapper;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import com.sensor.app.sensor_app_movil.utils.date.ConvertStringToCalendar;
 import jakarta.validation.Valid;
@@ -27,6 +25,9 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private UserMapper userMapper;
+
 
     @PutMapping("/modify-password")
     @PreAuthorize("isAuthenticated()")
@@ -41,19 +42,17 @@ public class UserController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserLoggedInResponse> getUserLoggedIn() {
+        UserLoggedInResponse ulr = this.userMapper.userEntityToUserLoggedInResponse(this.userService.getUserLoggedIn());
+        return new ResponseEntity<>(ulr, HttpStatus.OK);
+    }
 
     @PutMapping("/modify-data")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity modifyData(@RequestBody @Valid ModifyDataRequest mdr) {
-
-        User user = new User();
-        user.setName(mdr.getName());
-        user.setLastname(mdr.getLastname());
-        user.setNationality(mdr.getNationality());
-        user.setDateOfBirth(ConvertStringToCalendar.getCalendar(mdr.getDateOfBirth()));
-        user.setEmail(mdr.getEmail());
-        this.userService.modifyData(user);
-
+        this.userService.modifyData(this.userMapper.modifyDataRequestToUserEntity(mdr));
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 

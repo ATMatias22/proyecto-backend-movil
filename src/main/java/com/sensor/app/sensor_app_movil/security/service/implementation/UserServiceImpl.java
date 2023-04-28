@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -106,7 +107,7 @@ public class UserServiceImpl implements IUserService {
         user.setLastname(modifiedUser.getLastname());
         user.setNationality(modifiedUser.getNationality());
         user.setDateOfBirth(modifiedUser.getDateOfBirth());
-        user.setUpdated(Calendar.getInstance());
+        user.setUpdated(LocalDateTime.now());
 
         this.userDao.saveUser(user);
     }
@@ -122,7 +123,7 @@ public class UserServiceImpl implements IUserService {
 
         User user = confirmationToken.getFkUser();
         user.setEmail(confirmationToken.getNewEmail());
-        user.setUpdated(Calendar.getInstance());
+        user.setUpdated(LocalDateTime.now());
         this.userDao.saveUser(user);
 
         this.confirmationTokenEmailChangeService.deleteByToken(token);
@@ -175,7 +176,7 @@ public class UserServiceImpl implements IUserService {
 
         User user = confirmationToken.getFkUser();
         user.setPassword(confirmationToken.getNewPassword());
-        user.setUpdated(Calendar.getInstance());
+        user.setUpdated(LocalDateTime.now());
         this.userDao.saveUser(user);
 
         this.confirmationTokenPasswordChangeService.deleteByToken(token);
@@ -193,6 +194,13 @@ public class UserServiceImpl implements IUserService {
 
         this.deviceService.deleteAllWhenDeleteUser(user);
         this.userDao.deleteUser(user.getIdUser());
+
+    }
+
+    @Override
+    public User getUserLoggedIn() {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return  this.userDao.getUserById(mu.getId()).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro al usuario logueado por favor inicie sesion de vuelta"));
 
     }
 

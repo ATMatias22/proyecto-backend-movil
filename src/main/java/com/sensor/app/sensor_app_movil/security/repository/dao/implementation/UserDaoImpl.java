@@ -39,5 +39,10 @@ public class UserDaoImpl implements IUserDao {
         this.userRepository.deleteById(id);
     }
 
+    @Override
+    public Optional<User> getUserById(Long id) {
+        return this.userRepository.findById(id);
+    }
+
 
 }

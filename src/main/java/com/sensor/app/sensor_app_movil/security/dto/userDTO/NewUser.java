@@ -35,6 +35,4 @@ public class NewUser {
     @ValidDate(message =  "Fecha de nacimiento mal colocada")
     private String dateOfBirth;
 
-
-
 }

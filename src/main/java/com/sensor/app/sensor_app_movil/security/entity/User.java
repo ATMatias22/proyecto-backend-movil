@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 @Entity
@@ -32,9 +34,7 @@ public class User implements Cloneable {
     private String email;
 
     @Column(name = "date_of_birth", nullable = false)
-    @Temporal(value = TemporalType.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Argentina/Buenos_Aires")
-    private Calendar dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name="nationality", length = 60, nullable = false)
     private String nationality;
@@ -43,14 +43,10 @@ public class User implements Cloneable {
     private String password;
 
     @Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="DATETIME default NOW()")
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-    private Calendar created;
+    private LocalDateTime created;
 
     @Column(name = "update_date", insertable = false, nullable = false, columnDefinition="DATETIME default NOW()")
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-    private Calendar updated;
+    private LocalDateTime updated;
 
     private Boolean enabled = false;
 

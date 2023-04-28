@@ -19,7 +19,6 @@ public class ModifyDataRequest {
     @NotBlank(message = "El nombre no puede ser nulo ni vacio")
     private String name;
 
-
     @Size(max = 50, message = "el apellido debe tener como maximo 50 caracteres")
     @NotBlank(message = "El apellido no puede ser nulo ni vacio")
     private String lastname;
