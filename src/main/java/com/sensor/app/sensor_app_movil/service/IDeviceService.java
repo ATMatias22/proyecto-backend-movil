@@ -4,6 +4,9 @@ package com.sensor.app.sensor_app_movil.service;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 
+import java.awt.print.Pageable;
+import java.util.List;
+
 public interface IDeviceService {
 
 
@@ -23,6 +26,10 @@ public interface IDeviceService {
     void deleteDeviceFromUser(String deviceCode);
 
     void deleteAllWhenDeleteUser(User user);
+
+    List<Device> getAllByFkUser(int page);
+
+
 
 
 

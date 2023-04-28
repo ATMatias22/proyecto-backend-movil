@@ -20,4 +20,6 @@ public interface IObserverDao{
 
     void deleteAllByFkUser(User fkUser);
 
+    int countByDevice(Device fkDevice);
+
 }

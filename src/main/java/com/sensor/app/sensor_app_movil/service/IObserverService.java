@@ -17,4 +17,7 @@ public interface IObserverService {
 
     void deleteAllByFkUser(User fkUser);
 
+    int countByDevice(Device fkDevice);
+
+
 }

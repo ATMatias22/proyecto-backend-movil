@@ -37,4 +37,7 @@ public class WiFi {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Calendar updated;
 
+    @Column(name="state")
+    private Boolean state;
+
 }

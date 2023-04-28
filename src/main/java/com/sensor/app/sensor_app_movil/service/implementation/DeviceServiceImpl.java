@@ -15,6 +15,9 @@ import com.sensor.app.sensor_app_movil.service.IInformativeMessageService;
 import com.sensor.app.sensor_app_movil.service.IObserverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -214,6 +217,14 @@ public class DeviceServiceImpl implements IDeviceService {
         //elimina a todos los usuarios donde es invitado
         this.observerService.deleteAllByFkUser(user);
 
+    }
+
+    @Override
+    public List<Device> getAllByFkUser(int page) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.userService.getUserByEmail(mu.getUsername());
+        Pageable pageable = PageRequest.of(page, 5);
+        return this.deviceDao.getAllByFkUser(user, pageable);
     }
 
 
