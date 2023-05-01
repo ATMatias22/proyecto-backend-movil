@@ -9,6 +9,7 @@ import com.sensor.app.sensor_app_movil.security.service.IAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,21 +26,21 @@ public class AuthController {
     private UserMapper userMapper;
 
 
-    @PostMapping("/register")
+    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void>  register(@RequestBody @Valid NewUserRequest newUser) {
         authService.register(this.userMapper.newUserRequestToUserEntity(newUser));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
-    @PostMapping("/login")
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtDto> login(@RequestBody LoginUserRequest loginUser) {
         String jwt = this.authService.login(this.userMapper.loginUserRequestToUserEntity(loginUser));
         return new ResponseEntity<>(new JwtDto(jwt), HttpStatus.OK);
     }
 
 
-    @PostMapping(path = "/confirm")
+    @PostMapping(path = "/confirm", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtDto> confirm(@RequestBody ConfirmRegisterUserRequest cru) {
         return new ResponseEntity<>(new JwtDto(authService.confirmToken(cru.getToken())), HttpStatus.OK);
     }

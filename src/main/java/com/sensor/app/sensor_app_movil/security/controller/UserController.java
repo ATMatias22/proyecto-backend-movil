@@ -9,6 +9,7 @@ import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserController {
     private UserMapper userMapper;
 
 
-    @PutMapping("/modify-password")
+    @PutMapping(path ="/modify-password", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> modifyPassword(@RequestBody @Valid ModifyPasswordRequest mpr) {
         this.userService.modifyPassword(mpr.getPassword(), mpr.getNewPassword());
@@ -39,14 +40,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserLoggedInResponse> getUserLoggedIn() {
         UserLoggedInResponse ulr = this.userMapper.userEntityToUserLoggedInResponse(this.userService.getUserLoggedIn());
         return new ResponseEntity<>(ulr, HttpStatus.OK);
     }
 
-    @PutMapping("/modify-data")
+    @PutMapping(path = "/modify-data", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> modifyData(@RequestBody @Valid ModifyDataRequest mdr) {
         this.userService.modifyData(this.userMapper.modifyDataRequestToUserEntity(mdr));
@@ -61,7 +62,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/delete-user")
+    @PostMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> confirm(@RequestBody DeleteUserRequest du) {
         this.userService.deleteUser(du.getPassword());
