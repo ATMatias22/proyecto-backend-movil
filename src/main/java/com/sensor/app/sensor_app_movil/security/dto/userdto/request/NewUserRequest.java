@@ -1,6 +1,6 @@
-package com.sensor.app.sensor_app_movil.security.dto.userDTO;
+package com.sensor.app.sensor_app_movil.security.dto.userdto.request;
 
-import com.sensor.app.sensor_app_movil.utils.date.validDate.ValidDate;
+import com.sensor.app.sensor_app_movil.utils.date.validdate.ValidDate;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewUser {
+public class NewUserRequest {
 
 
     @Size(max = 50, message = "el nombre debe tener como maximo 50 caracteres")

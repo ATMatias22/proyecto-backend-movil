@@ -1,6 +1,5 @@
 package com.sensor.app.sensor_app_movil.security;
 
-import com.sensor.app.sensor_app_movil.security.jwt.JwtEntryPoint;
 import com.sensor.app.sensor_app_movil.security.jwt.JwtTokenFilter;
 import com.sensor.app.sensor_app_movil.security.service.implementation.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ public class MainSecurity  {
     @Autowired
     UserDetailsServiceImpl userDetailsServiceImpl;
 
-    @Autowired
-    JwtEntryPoint jwtEntryPoint;
 
     @Bean
     public JwtTokenFilter jwtTokenFilter(){
@@ -47,7 +44,6 @@ public class MainSecurity  {
                 .and()
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtEntryPoint)
                 .and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth

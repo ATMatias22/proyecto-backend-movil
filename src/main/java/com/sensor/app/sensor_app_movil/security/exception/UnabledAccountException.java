@@ -6,7 +6,7 @@ public class UnabledAccountException extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
 
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public UnabledAccountException(HttpStatus status, String message) {
         super(message);
@@ -16,10 +16,5 @@ public class UnabledAccountException extends RuntimeException{
     public HttpStatus getStatus() {
         return status;
     }
-
-    public void setStatus(HttpStatus status) {
-        this.status = status;
-    }
-
 
 }

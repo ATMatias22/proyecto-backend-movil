@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.security.dto.userDTO;
+package com.sensor.app.sensor_app_movil.security.dto.userdto.response;
 
 import lombok.*;
 

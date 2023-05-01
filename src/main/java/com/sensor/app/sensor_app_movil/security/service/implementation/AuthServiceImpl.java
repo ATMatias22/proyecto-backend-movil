@@ -2,11 +2,9 @@ package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
-import com.sensor.app.sensor_app_movil.exception.GlobalExceptionHandler;
 import com.sensor.app.sensor_app_movil.exception.constants.ExceptionMessage;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationToken;
 import com.sensor.app.sensor_app_movil.security.entity.User;
-import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.jwt.JwtProvider;
 import com.sensor.app.sensor_app_movil.security.service.IAuthService;
 import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenService;
@@ -42,7 +40,7 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private IConfirmationTokenService confirmationTokenService;
 
-    private final static Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Override
     public String login(User user) {
@@ -94,7 +92,6 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     @Transactional
     public String confirmToken(String id) {
-        System.out.println(id);
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getConfirmationTokenById(id)
                 .orElseThrow(() ->
