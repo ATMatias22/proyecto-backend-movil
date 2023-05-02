@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.security.dto.userDTO;
+package com.sensor.app.sensor_app_movil.security.dto.userdto.request;
 
 import lombok.*;
 
@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ConfirmRegisterUser {
-
+public class ConfirmRegisterUserRequest {
     private String token;
 }

@@ -1,6 +1,8 @@
 package com.sensor.app.sensor_app_movil.utils.date;
 
 import com.sensor.app.sensor_app_movil.utils.date.constants.DateConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -12,6 +14,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 public class StringToLocalDateAndViceVersa {
 
+    private static final Logger logger = LoggerFactory.getLogger(StringToLocalDateAndViceVersa.class);
+
     public Optional<LocalDate> toLocalDate(String strDate, boolean canNull) throws NullPointerException, DateTimeParseException{
         Optional<LocalDate> optionalCalendar = Optional.empty();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateConstants.FORMAT_DATE);
@@ -19,10 +23,10 @@ public class StringToLocalDateAndViceVersa {
                 LocalDate localDate = LocalDate.parse(strDate, formatter);
                 optionalCalendar = Optional.of(localDate);
         } catch (DateTimeParseException e) {
-            System.err.println("DateTimeParseException: " + e.getMessage());
+            logger.error(String.format("DateTimeParseException: %s",  e.getMessage()));
             throw new RuntimeException("Cadena no cumple con el formato necesario");
         } catch (NullPointerException ne){
-            System.err.println("NullPointerException: " + ne.getMessage());
+            logger.error(String.format("NullPointerException: %s", ne.getMessage()));
             if(!canNull){
                 throw new NullPointerException("No puede ser nulo");
             }

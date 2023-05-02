@@ -1,13 +1,11 @@
 package com.sensor.app.sensor_app_movil.security.jwt;
 
 
-import com.sensor.app.sensor_app_movil.security.dto.MainUser;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -16,7 +14,7 @@ import java.util.Date;
 public class JwtProvider {
 
     private static final String EMAIL_CLAIM = "email";
-    private final static Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
     @Value("${jwt.secret}")
     private String secret;

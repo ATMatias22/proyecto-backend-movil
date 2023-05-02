@@ -1,8 +1,6 @@
 package com.sensor.app.sensor_app_movil.exception;
 
-import com.sensor.app.sensor_app_movil.exception.constants.ExceptionMessage;
 import com.sensor.app.sensor_app_movil.exception.dto.DetailsError;
-import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,15 +17,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.naming.AuthenticationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler  {
 
-    private final static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+
+    private static final String ERROR  = "error";
 
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<HashMap<String, DetailsError>> generalExceptionHandler(GeneralException exception, WebRequest webRequest) {
@@ -41,7 +37,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
                 webRequest.getDescription(false), exception.getStatus().value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
 
         return new ResponseEntity<>(dataError, exception.getStatus());
@@ -59,7 +55,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), e.getMessage(),
                 webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.UNAUTHORIZED);
     }
@@ -74,7 +70,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), "Acceso denegado",
                 webRequest.getDescription(false), HttpStatus.FORBIDDEN.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.FORBIDDEN);
     }
@@ -90,7 +86,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), "Recurso no encontrado",
                 webRequest.getDescription(false), HttpStatus.NOT_FOUND.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
     }
@@ -106,7 +102,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), "No se pudo realizar la accion",
                 webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.BAD_REQUEST);
     }
@@ -123,7 +119,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), "Recurso no encontrado",
                 webRequest.getDescription(false), HttpStatus.NOT_FOUND.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
     }
@@ -139,7 +135,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), "No se puede guardar este dato",
                 webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
     }
@@ -158,7 +154,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), errors,
                 webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
 
         return new ResponseEntity<>(dataError, HttpStatus.BAD_REQUEST);
@@ -176,7 +172,7 @@ public class GlobalExceptionHandler  {
         DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
                 webRequest.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        dataError.put("error", detailsError);
+        dataError.put(ERROR, detailsError);
 
         return new ResponseEntity<>(dataError, HttpStatus.INTERNAL_SERVER_ERROR);
     }

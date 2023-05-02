@@ -4,7 +4,6 @@ package com.sensor.app.sensor_app_movil.service;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 public interface IDeviceService {

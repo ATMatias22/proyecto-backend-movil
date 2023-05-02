@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.utils.date.validDate;
+package com.sensor.app.sensor_app_movil.utils.date.validdate;
 
 import com.sensor.app.sensor_app_movil.utils.date.constants.DateConstants;
 import jakarta.validation.ConstraintValidator;

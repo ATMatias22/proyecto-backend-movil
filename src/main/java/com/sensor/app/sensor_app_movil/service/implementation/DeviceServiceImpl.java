@@ -43,9 +43,10 @@ public class DeviceServiceImpl implements IDeviceService {
     private IEmailService emailService;
     @Autowired
     private IConfirmationTokenInvitationService confirmationTokenInvitationService;
-
     @Autowired
     private IInformativeMessageService informativeMessageService;
+
+    private static final String DEVICE_WITHOUT_OWNER_MESSAGE = "Este dispositivo no tiene dueño";
 
 
     public DeviceServiceImpl(@Lazy PasswordEncoder passwordEncoder) {
@@ -157,7 +158,7 @@ public class DeviceServiceImpl implements IDeviceService {
                 throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede eliminar a un invitado si no es el dueño del dispositivo");
             }
         } else {
-            throw new GeneralException(HttpStatus.UNAUTHORIZED, "Este dispositivo no tiene dueño");
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
         }
 
         Observer observer = this.observerService.getObserverByUserAndDevice(userDeleted, device);
@@ -174,7 +175,7 @@ public class DeviceServiceImpl implements IDeviceService {
                 throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede vaciar el chat de un invitado si no es el dueño del dispositivo");
             }
         } else {
-            throw new GeneralException(HttpStatus.UNAUTHORIZED, "Este dispositivo no tiene dueño");
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
         }
 
         this.informativeMessageService.deleteByFkDevice(device);
@@ -190,7 +191,7 @@ public class DeviceServiceImpl implements IDeviceService {
                 throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede vaciar el chat de un invitado si no es el dueño del dispositivo");
             }
         } else {
-            throw new GeneralException(HttpStatus.UNAUTHORIZED, "Este dispositivo no tiene dueño");
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
         }
 
         device.setFkUser(null);

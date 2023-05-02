@@ -1,19 +1,18 @@
 package com.sensor.app.sensor_app_movil.security.mappers;
 
 
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.LoginUser;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.ModifyDataRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.NewUser;
-import com.sensor.app.sensor_app_movil.security.dto.userDTO.UserLoggedInResponse;
+import com.sensor.app.sensor_app_movil.security.dto.userdto.request.LoginUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.userdto.request.ModifyDataRequest;
+import com.sensor.app.sensor_app_movil.security.dto.userdto.request.NewUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.userdto.response.UserLoggedInResponse;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.utils.date.StringToLocalDateAndViceVersa;
-import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring")
 public abstract class UserMapper {
 
     @Autowired
@@ -47,13 +46,13 @@ public abstract class UserMapper {
             @Mapping(target = "dateOfBirth", expression = "java(stdv.getLocalDate(newUser.getDateOfBirth()))" ),
             @Mapping(source = "nationality", target = "nationality"),
     })
-    public abstract User newUserRequestToUserEntity(NewUser newUser);
+    public abstract User newUserRequestToUserEntity(NewUserRequest newUser);
 
 
     @Mappings({
             @Mapping(source = "email", target = "email"),
             @Mapping(source = "password", target = "password"),
     })
-    public abstract User loginUserRequestToUserEntity(LoginUser loginUser);
+    public abstract User loginUserRequestToUserEntity(LoginUserRequest loginUser);
 
 }

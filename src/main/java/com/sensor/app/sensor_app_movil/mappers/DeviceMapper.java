@@ -7,9 +7,8 @@ import com.sensor.app.sensor_app_movil.service.IObserverService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring")
 public abstract class DeviceMapper {
 
     @Autowired

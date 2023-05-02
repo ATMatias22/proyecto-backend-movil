@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.security.dto.userDTO;
+package com.sensor.app.sensor_app_movil.security.dto.userdto.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DeleteUser {
+public class DeleteUserRequest {
 
     private String password;
 

@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.security.dto.userDTO;
+package com.sensor.app.sensor_app_movil.security.dto.userdto.request;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;

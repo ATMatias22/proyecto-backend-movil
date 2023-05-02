@@ -1,7 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 
 @Entity
 @Table(name = "Users")

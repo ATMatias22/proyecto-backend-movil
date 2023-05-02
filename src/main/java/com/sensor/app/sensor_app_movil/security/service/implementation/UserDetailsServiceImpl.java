@@ -4,7 +4,6 @@ package com.sensor.app.sensor_app_movil.security.service.implementation;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.exception.constants.ExceptionMessage;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
-import com.sensor.app.sensor_app_movil.security.entity.ConfirmationToken;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenService;
@@ -36,10 +35,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new GeneralException(HttpStatus.UNAUTHORIZED, ExceptionMessage.BAD_CREDENTIALS);
         }
 
-        if (!user.getEnabled()) {
-            if (this.confirmationTokenService.existsTokenForFkUser(user)) {
+        if (!user.getEnabled() && this.confirmationTokenService.existsTokenForFkUser(user)) {
                 throw new UnabledAccountException(HttpStatus.UNAUTHORIZED, ExceptionMessage.UNABLED_ACCOUNT);
-            }
         }
 
         return MainUser.build(user);

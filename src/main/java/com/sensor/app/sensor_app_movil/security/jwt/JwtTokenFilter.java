@@ -1,7 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.jwt;
 
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
-import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.service.implementation.UserDetailsServiceImpl;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +23,7 @@ import java.io.IOException;
 
 public class JwtTokenFilter  extends OncePerRequestFilter {
 
-    private final static Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenFilter.class);
 
     @Autowired
     private JwtProvider jwtProvider;
@@ -38,7 +36,7 @@ public class JwtTokenFilter  extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.info("Estoy en filter");
+        log.info("Estoy en filter");
 
         try {
             String token = getJwtFromRequest(request);
@@ -56,13 +54,13 @@ public class JwtTokenFilter  extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         }catch (JwtException | AuthenticationException ja){
-            logger.info(ja.getMessage());
+            log.info(ja.getMessage());
             resolver.resolveException(request, response, null, new JwtException("Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
         }catch (GeneralException ex){
-            logger.info(ex.getMessage());
+            log.info(ex.getMessage());
             resolver.resolveException(request, response, null, new GeneralException(HttpStatus.UNAUTHORIZED, "Problemas con el inicio de sesion, borre el token del encabezado e inicie sesion nuevamente"));
         }catch (Exception ex){
-            logger.info(ex.getMessage());
+            log.info(ex.getMessage());
             resolver.resolveException(request, response, null, new Exception("Problemas en el servidor"));
         }
 

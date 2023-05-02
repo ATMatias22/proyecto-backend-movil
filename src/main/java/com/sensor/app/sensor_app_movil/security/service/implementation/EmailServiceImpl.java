@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceImpl implements IEmailService {
 
-    private final static Logger LOGGER = LoggerFactory
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(EmailServiceImpl.class);
 
     @Autowired
