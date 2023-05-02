@@ -72,9 +72,22 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public Device getByDeviceCode(String deviceCode) {
-        return this.deviceDao.getByDeviceCode(deviceCode).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el dispositivo con codigo: " + deviceCode));
+    public Device getByDeviceCodeForOwner(String deviceCode) {
+        Device device = this.getByDeviceCode(deviceCode);
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (device.getFkUser() == null) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "El dispositivo no tiene dueño");
+        }else{
+            if(device.getFkUser().getIdUser() != mu.getId() ){
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede acceder a este dispositivo");
+            }
+        }
+
+        return device;
     }
+
+
 
     @Transactional
     @Override
@@ -181,9 +194,10 @@ public class DeviceServiceImpl implements IDeviceService {
         this.informativeMessageService.deleteByFkDevice(device);
 
     }
+
     @Transactional
     @Override
-    public void deleteDeviceFromUser(String deviceCode){
+    public void deleteDeviceFromUser(String deviceCode) {
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Device device = this.getByDeviceCode(deviceCode);
         if (device.getFkUser() != null) {
@@ -296,6 +310,11 @@ public class DeviceServiceImpl implements IDeviceService {
                 "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
                 "\n" +
                 "</div></div>";
+    }
+
+
+    private Device getByDeviceCode(String deviceCode) {
+        return this.deviceDao.getByDeviceCode(deviceCode).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el dispositivo con codigo: " + deviceCode));
     }
 
 }

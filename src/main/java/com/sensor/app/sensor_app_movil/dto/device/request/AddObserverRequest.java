@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.dto.device;
+package com.sensor.app.sensor_app_movil.dto.device.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

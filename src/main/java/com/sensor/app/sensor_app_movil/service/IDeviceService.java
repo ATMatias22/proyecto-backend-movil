@@ -11,7 +11,8 @@ public interface IDeviceService {
 
     void linkUser(String deviceCode, String password);
 
-    Device getByDeviceCode(String deviceCode);
+    Device getByDeviceCodeForOwner(String deviceCode);
+
     void addObserver(String email, String deviceCode);
 
     void unlinkObserver(String deviceCode);

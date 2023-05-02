@@ -1,9 +1,10 @@
 package com.sensor.app.sensor_app_movil.controller;
 
 
-import com.sensor.app.sensor_app_movil.dto.device.AddObserverRequest;
-import com.sensor.app.sensor_app_movil.dto.device.LinkDeviceRequest;
-import com.sensor.app.sensor_app_movil.dto.device.OwnDevicesResponse;
+import com.sensor.app.sensor_app_movil.dto.device.request.AddObserverRequest;
+import com.sensor.app.sensor_app_movil.dto.device.request.LinkDeviceRequest;
+import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import jakarta.validation.Valid;
@@ -86,6 +87,15 @@ public class DeviceController {
     public ResponseEntity<Void>  deleteDeviceFromUser(@PathVariable("deviceCode") String deviceCode ) {
         this.deviceService.deleteDeviceFromUser(deviceCode);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @GetMapping(path = "/{deviceCode}/own", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<OwnDeviceResponse>  getByDeviceCodeForOwner(@PathVariable("deviceCode") String deviceCode ) {
+        OwnDeviceResponse device = this.deviceMapper.toOwnDeviceResponse(this.deviceService.getByDeviceCodeForOwner(deviceCode));
+        System.out.println(device);
+        return new ResponseEntity<>(device,HttpStatus.OK);
     }
 
 
