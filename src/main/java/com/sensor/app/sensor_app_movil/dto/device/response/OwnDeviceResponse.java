@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.dto.device;
+package com.sensor.app.sensor_app_movil.dto.device.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OwnDevicesResponse {
-
+public class OwnDeviceResponse {
 
     private String deviceName;
+
     private String deviceCode;
-    private int linkedPersons;
-    private Boolean deviceStatus;
-    private Boolean deviceWifiState;
+
+    private Boolean isDeviceOn;
 
 }

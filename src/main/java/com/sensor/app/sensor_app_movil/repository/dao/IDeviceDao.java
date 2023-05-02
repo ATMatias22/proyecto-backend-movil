@@ -10,9 +10,7 @@ import java.util.Optional;
 public interface IDeviceDao {
 
     Optional<Device> getByDeviceCode(String deviceCode);
-
     void save (Device device);
-
     List<Device> getAllByFkUser(User fkUser);
     List<Device> getAllByFkUser(User fkUser, Pageable pageable);
 }
