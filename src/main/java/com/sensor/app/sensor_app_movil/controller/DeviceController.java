@@ -3,6 +3,7 @@ package com.sensor.app.sensor_app_movil.controller;
 
 import com.sensor.app.sensor_app_movil.dto.device.request.AddObserverRequest;
 import com.sensor.app.sensor_app_movil.dto.device.request.LinkDeviceRequest;
+import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
@@ -34,6 +35,13 @@ public class DeviceController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<OwnDevicesResponse>> getDeviceOwn(@RequestParam(name = "page", defaultValue = "0") int page) {
        List<OwnDevicesResponse> odr = this.deviceService.getAllByFkUser(page).stream().map(device -> deviceMapper.toOwnDevicesResponse(device)).toList();
+        return new ResponseEntity<>(odr, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/observed", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ObservedDeviceResponse>> getDeviceObserved(@RequestParam(name = "page", defaultValue = "0") int page) {
+        List<ObservedDeviceResponse> odr = this.deviceService.getAllByObserver(page).stream().map(device -> deviceMapper.toObservedDeviceResponse(device)).toList();
         return new ResponseEntity<>(odr, HttpStatus.OK);
     }
 

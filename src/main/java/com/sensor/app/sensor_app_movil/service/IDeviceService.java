@@ -29,6 +29,7 @@ public interface IDeviceService {
 
     List<Device> getAllByFkUser(int page);
 
+    List<Device> getAllByObserver(int page);
 
 
 

@@ -8,8 +8,11 @@ import com.sensor.app.sensor_app_movil.repository.dao.IObserverDao;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.service.IObserverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ObserverServiceImpl implements IObserverService {
@@ -36,6 +39,11 @@ public class ObserverServiceImpl implements IObserverService {
     @Override
     public Observer getObserverByUserAndDevice(User user, Device device) {
         return this.observerDao.getObserverByUserAndDevice(user,device).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el invitado"));
+    }
+
+    @Override
+    public List<Observer> getObserversByFkUser(User fkUser, Pageable pageable) {
+        return this.observerDao.getObserversByFkUser(fkUser, pageable);
     }
 
     @Override
