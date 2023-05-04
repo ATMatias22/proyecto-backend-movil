@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -240,6 +241,20 @@ public class DeviceServiceImpl implements IDeviceService {
         User user = this.userService.getUserByEmail(mu.getUsername());
         Pageable pageable = PageRequest.of(page, 5);
         return this.deviceDao.getAllByFkUser(user, pageable);
+    }
+
+    @Override
+    public List<Device> getAllByObserver(int page) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pageable pageable = PageRequest.of(page, 5);
+
+        User user = this.userService.getUserByEmail(mu.getUsername());
+        List<Device> devices = new ArrayList<>();
+        this.observerService.getObserversByFkUser(user, pageable).forEach(observer -> {
+            devices.add(observer.getFkDevice());
+        });
+
+        return devices;
     }
 
 

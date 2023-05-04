@@ -6,8 +6,10 @@ import com.sensor.app.sensor_app_movil.repository.IObserverRepository;
 import com.sensor.app.sensor_app_movil.repository.dao.IObserverDao;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -50,5 +52,10 @@ public class ObserverDaoImpl implements IObserverDao {
     @Override
     public int countByDevice(Device fkDevice) {
         return this.observerRepository.countByFkDevice(fkDevice);
+    }
+
+    @Override
+    public List<Observer> getObserversByFkUser(User fkUser, Pageable pageable) {
+        return this.observerRepository.findByFkUser(fkUser,pageable);
     }
 }

@@ -1,6 +1,7 @@
 package com.sensor.app.sensor_app_movil.mappers;
 
 
+import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.entity.Device;
@@ -33,6 +34,14 @@ public abstract class DeviceMapper {
     })
     public abstract OwnDeviceResponse toOwnDeviceResponse (Device device);
 
+
+    @Mappings({
+            @Mapping(source = "name", target = "deviceName"),
+            @Mapping(source = "deviceCode", target = "deviceCode"),
+            @Mapping(target = "linkedPersons", expression = "java(observerService.countByDevice(device))" ),
+            @Mapping(source = "device.fkUser.email", target = "ownerEmail"),
+    })
+    public abstract ObservedDeviceResponse toObservedDeviceResponse (Device device);
 
 
 

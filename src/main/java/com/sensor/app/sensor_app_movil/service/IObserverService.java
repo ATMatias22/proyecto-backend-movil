@@ -3,6 +3,9 @@ package com.sensor.app.sensor_app_movil.service;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.Observer;
 import com.sensor.app.sensor_app_movil.security.entity.User;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface IObserverService {
 
@@ -12,6 +15,8 @@ public interface IObserverService {
     void delete (Observer observer);
 
     Observer getObserverByUserAndDevice(User user, Device device);
+
+    List<Observer> getObserversByFkUser(User fkUser, Pageable pageable);
 
     void deleteByFkDevice(Device fkDevice);
 
