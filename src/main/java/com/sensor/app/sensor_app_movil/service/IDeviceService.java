@@ -31,6 +31,8 @@ public interface IDeviceService {
 
     List<Device> getAllByObserver(int page);
 
+    void changeDeviceName(String deviceCode, String newName);
+
 
 
 
