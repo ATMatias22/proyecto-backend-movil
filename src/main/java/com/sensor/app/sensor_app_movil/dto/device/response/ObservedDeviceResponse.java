@@ -19,4 +19,7 @@ public class ObservedDeviceResponse {
 
     private int linkedPersons;
 
+    private Boolean isDeviceOn;
+    private Boolean isWifiOn;
+
 }
