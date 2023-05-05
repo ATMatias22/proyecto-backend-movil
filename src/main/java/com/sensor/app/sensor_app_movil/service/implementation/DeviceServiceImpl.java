@@ -257,6 +257,25 @@ public class DeviceServiceImpl implements IDeviceService {
         return devices;
     }
 
+    @Override
+    public void changeDeviceName(String deviceCode, String newName) {
+
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede cambiar el nombre del dispositivo, solo el dueño puede hacerlo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
+        }
+
+        device.setName(newName);
+        this.deviceDao.save(device);
+
+    }
+
 
     private String buildEmailForConfirmInvitation(String link, String email) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +

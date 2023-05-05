@@ -2,6 +2,7 @@ package com.sensor.app.sensor_app_movil.controller;
 
 
 import com.sensor.app.sensor_app_movil.dto.device.request.AddObserverRequest;
+import com.sensor.app.sensor_app_movil.dto.device.request.ChangeNameRequest;
 import com.sensor.app.sensor_app_movil.dto.device.request.LinkDeviceRequest;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
@@ -104,6 +105,13 @@ public class DeviceController {
         OwnDeviceResponse device = this.deviceMapper.toOwnDeviceResponse(this.deviceService.getByDeviceCodeForOwner(deviceCode));
         System.out.println(device);
         return new ResponseEntity<>(device,HttpStatus.OK);
+    }
+
+    @PutMapping(path ="/change-name", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changeNameDevice(@RequestBody @Valid ChangeNameRequest changeNameRequest) {
+        this.deviceService.changeDeviceName(changeNameRequest.getDeviceCode(), changeNameRequest.getNewName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
