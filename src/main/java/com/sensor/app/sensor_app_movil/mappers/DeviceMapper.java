@@ -40,6 +40,8 @@ public abstract class DeviceMapper {
             @Mapping(source = "deviceCode", target = "deviceCode"),
             @Mapping(target = "linkedPersons", expression = "java(observerService.countByDevice(device))" ),
             @Mapping(source = "device.fkUser.email", target = "ownerEmail"),
+            @Mapping(source = "on", target = "isDeviceOn"),
+            @Mapping(source = "device.fkWiFi.state", target = "isWifiOn"),
     })
     public abstract ObservedDeviceResponse toObservedDeviceResponse (Device device);
 
