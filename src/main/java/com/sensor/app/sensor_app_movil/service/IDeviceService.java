@@ -33,8 +33,8 @@ public interface IDeviceService {
 
     void changeDeviceName(String deviceCode, String newName);
 
+    void changeDevicePassword(String deviceCode, String oldPassword, String newPassword);
 
-
-
+    void confirmTokenChangeDevicePassword(String token);
 
 }
