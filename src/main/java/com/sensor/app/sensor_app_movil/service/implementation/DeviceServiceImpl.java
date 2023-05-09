@@ -318,8 +318,7 @@ public class DeviceServiceImpl implements IDeviceService {
         }
 
         this.confirmationTokenDevicePasswordChangeService.saveConfirmationTokenDevicePasswordChange(ctd);
-        String link = "http://localhost:8080/app_movil_sensor/api/device/confirm-change-device-password?token=" + token;
-        emailService.send("Cambio de contraseña al dispostivo", mu.getUsername(), buildEmailForConfirmChangeDevicePassword(link, mu.getUsername(), device.getDeviceCode(), device.getName()));
+        emailService.send("Cambio de contraseña al dispostivo", mu.getUsername(), buildEmailForConfirmChangeDevicePassword(token, mu.getUsername(), device.getDeviceCode(), device.getName()));
 
     }
 
@@ -418,7 +417,7 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
 
-    private String buildEmailForConfirmChangeDevicePassword(String link, String email, String deviceCode, String deviceName) {
+    private String buildEmailForConfirmChangeDevicePassword(String token, String email, String deviceCode, String deviceName) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -474,7 +473,7 @@ public class DeviceServiceImpl implements IDeviceService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">  has tratado de cambiar la contraseña del dispositivo con codigo: " + deviceCode + " con nombre " + deviceName + "  si has sido tu has clic en el siguiente link: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n </p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">  has tratado de cambiar la contraseña del dispositivo con codigo: \"" + deviceCode + "\" con nombre \"" + deviceName + "\"  si has sido tu copia el siguiente token en la aplicacion: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">"+token+"</p></blockquote>\n </p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
