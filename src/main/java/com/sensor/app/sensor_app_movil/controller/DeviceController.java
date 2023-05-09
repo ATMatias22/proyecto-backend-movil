@@ -2,6 +2,7 @@ package com.sensor.app.sensor_app_movil.controller;
 
 
 import com.sensor.app.sensor_app_movil.dto.device.request.AddObserverRequest;
+import com.sensor.app.sensor_app_movil.dto.device.request.ChangeDevicePasswordRequest;
 import com.sensor.app.sensor_app_movil.dto.device.request.ChangeNameRequest;
 import com.sensor.app.sensor_app_movil.dto.device.request.LinkDeviceRequest;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
@@ -111,6 +112,21 @@ public class DeviceController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> changeNameDevice(@RequestBody @Valid ChangeNameRequest changeNameRequest) {
         this.deviceService.changeDeviceName(changeNameRequest.getDeviceCode(), changeNameRequest.getNewName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PutMapping(path ="/change-device-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changeDevicePassword(@RequestBody @Valid ChangeDevicePasswordRequest changeDevicePasswordRequest) {
+        this.deviceService.changeDevicePassword(changeDevicePasswordRequest.getDeviceCode(), changeDevicePasswordRequest.getOldPassword(), changeDevicePasswordRequest.getNewPassword());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = "/confirm-change-device-password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> confirmChangeDevicePassword(@RequestParam("token") String token) {
+        this.deviceService.confirmTokenChangeDevicePassword(token);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

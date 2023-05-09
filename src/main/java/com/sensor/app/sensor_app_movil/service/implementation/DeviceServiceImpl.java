@@ -1,18 +1,17 @@
 package com.sensor.app.sensor_app_movil.service.implementation;
 
+import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenDevicePasswordChange;
 import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenInvitation;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.Observer;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.repository.dao.IDeviceDao;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
+import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenPasswordChange;
 import com.sensor.app.sensor_app_movil.security.entity.User;
-import com.sensor.app.sensor_app_movil.service.IConfirmationTokenInvitationService;
+import com.sensor.app.sensor_app_movil.service.*;
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
-import com.sensor.app.sensor_app_movil.service.IDeviceService;
-import com.sensor.app.sensor_app_movil.service.IInformativeMessageService;
-import com.sensor.app.sensor_app_movil.service.IObserverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -47,6 +46,9 @@ public class DeviceServiceImpl implements IDeviceService {
     @Autowired
     private IInformativeMessageService informativeMessageService;
 
+    @Autowired
+    private IConfirmationTokenDevicePasswordChangeService confirmationTokenDevicePasswordChangeService;
+
     private static final String DEVICE_WITHOUT_OWNER_MESSAGE = "Este dispositivo no tiene dueño";
 
 
@@ -79,15 +81,14 @@ public class DeviceServiceImpl implements IDeviceService {
 
         if (device.getFkUser() == null) {
             throw new GeneralException(HttpStatus.BAD_REQUEST, "El dispositivo no tiene dueño");
-        }else{
-            if(device.getFkUser().getIdUser() != mu.getId() ){
+        } else {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
                 throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede acceder a este dispositivo");
             }
         }
 
         return device;
     }
-
 
 
     @Transactional
@@ -276,6 +277,76 @@ public class DeviceServiceImpl implements IDeviceService {
 
     }
 
+    @Override
+    @Transactional
+    public void changeDevicePassword(String deviceCode, String oldPassword, String newPassword) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede cambiar el nombre del dispositivo, solo el dueño puede hacerlo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
+        }
+
+        if (!passwordEncoder.matches(oldPassword, device.getPassword())) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "Password incorrecta");
+        } else if (passwordEncoder.matches(newPassword, device.getPassword())) {
+            throw new GeneralException(HttpStatus.BAD_REQUEST, "La nueva password no puede ser la misma que la anterior");
+        }
+
+        ConfirmationTokenDevicePasswordChange ctd = null;
+        String token = UUID.randomUUID().toString();
+        String newPasswordEncoded = this.passwordEncoder.encode(newPassword);
+
+        try {
+            ctd = this.confirmationTokenDevicePasswordChangeService.getConfirmationTokenDevicePasswordChangeByDevice(device);
+            ctd.setToken(token);
+            ctd.setCreatedAt(LocalDateTime.now());
+            ctd.setNewPassword(newPasswordEncoded);
+        } catch (GeneralException ge) {
+            User user = this.userService.getUserByEmail(mu.getUsername());
+            ctd = new ConfirmationTokenDevicePasswordChange(
+                    token,
+                    LocalDateTime.now(),
+                    user,
+                    device,
+                    newPasswordEncoded
+            );
+        }
+
+        this.confirmationTokenDevicePasswordChangeService.saveConfirmationTokenDevicePasswordChange(ctd);
+        String link = "http://localhost:8080/app_movil_sensor/api/device/confirm-change-device-password?token=" + token;
+        emailService.send("Cambio de contraseña al dispostivo", mu.getUsername(), buildEmailForConfirmChangeDevicePassword(link, mu.getUsername(), device.getDeviceCode(), device.getName()));
+
+    }
+
+
+    @Transactional
+    @Override
+    public void confirmTokenChangeDevicePassword(String token) {
+
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        ConfirmationTokenDevicePasswordChange confirmationToken = this.confirmationTokenDevicePasswordChangeService
+                .getConfirmationTokenDevicePasswordChangeByToken(token);
+
+        Device device = confirmationToken.getFkDevice();
+
+
+        if(device.getFkUser().getIdUser() != mu.getId()){
+            throw new GeneralException(HttpStatus.UNAUTHORIZED,"EL dispositivo ya no es suyo");
+        }
+
+        device.setPassword(confirmationToken.getNewPassword());
+        device.setUpdated(LocalDateTime.now());
+        this.deviceDao.save(device);
+
+        this.confirmationTokenDevicePasswordChangeService.deleteByToken(token);
+    }
+
 
     private String buildEmailForConfirmInvitation(String link, String email) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
@@ -334,6 +405,76 @@ public class DeviceServiceImpl implements IDeviceService {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">  El usuario con email:  " + email + " te ha invitado a que puedas observar el comportamiento de su dispositivo, si queres ser parte de ese dispositivo y ver los cambios de estados que este va teniendo, has clic en el siguiente link: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n </p>" +
+                "        \n" +
+                "      </td>\n" +
+                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "      <td height=\"30\"><br></td>\n" +
+                "    </tr>\n" +
+                "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
+                "\n" +
+                "</div></div>";
+    }
+
+
+    private String buildEmailForConfirmChangeDevicePassword(String link, String email, String deviceCode, String deviceName) {
+        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
+                "\n" +
+                "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
+                "\n" +
+                "  <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;min-width:100%;width:100%!important\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
+                "    <tbody><tr>\n" +
+                "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
+                "        \n" +
+                "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
+                "          <tbody><tr>\n" +
+                "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
+                "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
+                "                  <tbody><tr>\n" +
+                "                    <td style=\"padding-left:10px\">\n" +
+                "                  \n" +
+                "                    </td>\n" +
+                "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
+                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Cambio de contraseña del dispositivo</span>\n" +
+                "                    </td>\n" +
+                "                  </tr>\n" +
+                "                </tbody></table>\n" +
+                "              </a>\n" +
+                "            </td>\n" +
+                "          </tr>\n" +
+                "        </tbody></table>\n" +
+                "        \n" +
+                "      </td>\n" +
+                "    </tr>\n" +
+                "  </tbody></table>\n" +
+                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
+                "    <tbody><tr>\n" +
+                "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
+                "      <td>\n" +
+                "        \n" +
+                "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
+                "                  <tbody><tr>\n" +
+                "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
+                "                  </tr>\n" +
+                "                </tbody></table>\n" +
+                "        \n" +
+                "      </td>\n" +
+                "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
+                "    </tr>\n" +
+                "  </tbody></table>\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
+                "    <tbody><tr>\n" +
+                "      <td height=\"30\"><br></td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
+                "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
+                "        \n" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">  has tratado de cambiar la contraseña del dispositivo con codigo: " + deviceCode + " con nombre " + deviceName + "  si has sido tu has clic en el siguiente link: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n </p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
