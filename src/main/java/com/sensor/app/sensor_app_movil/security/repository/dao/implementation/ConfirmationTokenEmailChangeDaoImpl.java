@@ -16,9 +16,10 @@ public class ConfirmationTokenEmailChangeDaoImpl  implements IConfirmationTokenE
     @Autowired
     IConfirmationTokenEmailChangeRepository confirmationTokenEmailChangeRepository;
 
+
     @Override
-    public Optional<ConfirmationTokenEmailChange> getByToken(String token) {
-        return this.confirmationTokenEmailChangeRepository.findByToken(token);
+    public Optional<ConfirmationTokenEmailChange> getByTokenAndFkUser(String token, User fkUser) {
+        return this.confirmationTokenEmailChangeRepository.findByTokenAndFkUser(token, fkUser);
     }
 
     @Override
@@ -27,8 +28,8 @@ public class ConfirmationTokenEmailChangeDaoImpl  implements IConfirmationTokenE
     }
 
     @Override
-    public void deleteByToken(String token) {
-        this.confirmationTokenEmailChangeRepository.deleteByToken(token);
+    public void deleteByTokenAndFkUser(String token, User fkUser) {
+        this.confirmationTokenEmailChangeRepository.deleteByTokenAndFkUser(token, fkUser);
     }
 
     @Override

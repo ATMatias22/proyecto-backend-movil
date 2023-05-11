@@ -99,8 +99,7 @@ public class UserServiceImpl implements IUserService {
                 );
                 this.confirmationTokenEmailChangeService.saveConfirmationTokenEmailChange(confirmationToken);
             }
-            String link = "http://localhost:8080/app_movil_sensor/api/user/confirm-data?token=" + token;
-            emailService.send("Cambio de email",newEmail, buildEmailForChangeEmail(link, currentEmail));
+            emailService.send("Cambio de email",newEmail, buildEmailForChangeEmail(token, currentEmail));
         }
 
 
@@ -119,16 +118,20 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void confirmTokenEmailChange(String token) {
 
-        ConfirmationTokenEmailChange confirmationToken = this.confirmationTokenEmailChangeService
-                .getConfirmationTokenEmailChangeByToken(token);
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.getUserByEmail(mu.getUsername());
 
-        User user = confirmationToken.getFkUser();
-        user.setEmail(confirmationToken.getNewEmail());
-        user.setUpdated(LocalDateTime.now());
-        this.userDao.saveUser(user);
+
+        ConfirmationTokenEmailChange confirmationToken = this.confirmationTokenEmailChangeService
+                .getConfirmationTokenEmailChangeByTokenAndFkUser(token, user);
+
+        User userLinkedInToken = confirmationToken.getFkUser();
+        userLinkedInToken.setEmail(confirmationToken.getNewEmail());
+        userLinkedInToken.setUpdated(LocalDateTime.now());
+        this.userDao.saveUser(userLinkedInToken);
 
         this.confirmationTokenPasswordChangeService.deleteByFkUser(user);
-        this.confirmationTokenEmailChangeService.deleteByToken(token);
+        this.confirmationTokenEmailChangeService.deleteByTokenAndFkUser(token, user);
 
     }
 
@@ -210,7 +213,7 @@ public class UserServiceImpl implements IUserService {
     }
 
 
-    private String buildEmailForChangeEmail(String link, String oldEmail) {
+    private String buildEmailForChangeEmail(String token, String oldEmail) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -266,7 +269,7 @@ public class UserServiceImpl implements IUserService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Tu cuenta en nuestra aplicacion que esta registrada con el email " + oldEmail + " trato de cambiar el email, y colocar esta cuenta como nuevo email vinculado a esa cuenta, en caso de que seas tu, por favor hace clic en el siguiente enlace para confirmar el cambio de email: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n </p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Tu cuenta en nuestra aplicacion que esta registrada con el email " + oldEmail + " trato de cambiar el email, y colocar esta cuenta como nuevo email vinculado a esa cuenta, en caso de que seas tu, por favor copia el siguiente codigo en la aplicacion para confirmar el cambio de email: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">"+token+"</p></blockquote>\n </p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +

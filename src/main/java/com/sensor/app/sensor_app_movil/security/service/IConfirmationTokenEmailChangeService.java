@@ -5,11 +5,11 @@ import com.sensor.app.sensor_app_movil.security.entity.User;
 
 public interface IConfirmationTokenEmailChangeService {
 
-    ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByToken(String token);
+    ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByTokenAndFkUser(String token, User fkUser);
 
     void saveConfirmationTokenEmailChange(ConfirmationTokenEmailChange cte);
 
-    void deleteByToken (String token);
+    void deleteByTokenAndFkUser (String token, User fkUser);
 
     ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByUser(User user);
 

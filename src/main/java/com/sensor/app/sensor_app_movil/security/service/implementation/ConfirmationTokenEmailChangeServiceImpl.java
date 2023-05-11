@@ -17,8 +17,8 @@ public class ConfirmationTokenEmailChangeServiceImpl implements IConfirmationTok
     private IConfirmationTokenEmailChangeDao confirmationTokenEmailChangeDao;
 
     @Override
-    public ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByToken(String token) {
-        return this.confirmationTokenEmailChangeDao.getByToken(token).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "Token invalido"));
+    public ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByTokenAndFkUser(String token, User fkUser) {
+        return this.confirmationTokenEmailChangeDao.getByTokenAndFkUser(token, fkUser).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "Token invalido"));
     }
 
     @Override
@@ -27,8 +27,8 @@ public class ConfirmationTokenEmailChangeServiceImpl implements IConfirmationTok
     }
 
     @Override
-    public void deleteByToken(String token) {
-        this.confirmationTokenEmailChangeDao.deleteByToken(token);
+    public void deleteByTokenAndFkUser(String token, User fkUser) {
+        this.confirmationTokenEmailChangeDao.deleteByTokenAndFkUser(token, fkUser);
     }
 
     @Override
