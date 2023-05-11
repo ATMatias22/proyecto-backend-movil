@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface IConfirmationTokenEmailChangeRepository extends JpaRepository<ConfirmationTokenEmailChange, Long> {
 
-    Optional<ConfirmationTokenEmailChange> findByToken(String token);
+    Optional<ConfirmationTokenEmailChange> findByTokenAndFkUser(String token, User user);
 
-    void deleteByToken(String token);
+    void deleteByTokenAndFkUser(String token, User user);
 
     Optional<ConfirmationTokenEmailChange>  findByFkUser(User user);
 

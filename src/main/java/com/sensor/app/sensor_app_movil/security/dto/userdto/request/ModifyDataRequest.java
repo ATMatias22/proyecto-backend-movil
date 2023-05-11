@@ -15,11 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ModifyDataRequest {
 
-    @Size(max = 50, message = "el nombre debe tener como maximo 50 caracteres")
+    @Size(max = 50, message = "El nombre debe tener como maximo 50 caracteres")
     @NotBlank(message = "El nombre no puede ser nulo ni vacio")
     private String name;
 
-    @Size(max = 50, message = "el apellido debe tener como maximo 50 caracteres")
+    @Size(max = 50, message = "El apellido debe tener como maximo 50 caracteres")
     @NotBlank(message = "El apellido no puede ser nulo ni vacio")
     private String lastname;
 

@@ -8,11 +8,11 @@ import java.util.Optional;
 public interface IConfirmationTokenEmailChangeDao {
 
 
-    Optional<ConfirmationTokenEmailChange> getByToken(String token);
+    Optional<ConfirmationTokenEmailChange> getByTokenAndFkUser(String token, User fkUser);
 
     void saveConfirmationTokenEmailChange(ConfirmationTokenEmailChange cte);
 
-    void deleteByToken(String token);
+    void deleteByTokenAndFkUser(String token, User fkUser);
 
     Optional<ConfirmationTokenEmailChange> getTokenByUser(User user);
 
