@@ -1,5 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
+import com.sensor.app.sensor_app_movil.security.dto.userdto.request.ConfirmChangeUserPasswordRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userdto.request.DeleteUserRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userdto.request.ModifyDataRequest;
 import com.sensor.app.sensor_app_movil.security.dto.userdto.request.ModifyPasswordRequest;
@@ -34,9 +35,9 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(path = "/confirm-password")
-    public ResponseEntity<Void> confirmPassword(@RequestParam("token") String token) {
-        this.userService.confirmTokenPasswordChange(token);
+    @PostMapping(path = "/confirm-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> confirmPassword(@RequestBody @Valid ConfirmChangeUserPasswordRequest confirmChangeUserPasswordRequest) {
+        this.userService.confirmTokenPasswordChange(confirmChangeUserPasswordRequest.getToken());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

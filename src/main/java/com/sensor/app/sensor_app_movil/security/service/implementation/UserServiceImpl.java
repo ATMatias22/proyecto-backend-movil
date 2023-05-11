@@ -50,6 +50,9 @@ public class UserServiceImpl implements IUserService {
     public void saveUser(User user) {
 
         userDao.getUserByEmail(user.getEmail()).ifPresent(u -> {
+            if(!u.getEnabled()){
+                throw new GeneralException(HttpStatus.BAD_REQUEST,  u.getEmail() + " ya fue registrado verifique su casilla de mails para confirmar");
+            }
             throw new GeneralException(HttpStatus.BAD_REQUEST, "El email " + u.getEmail() + " ya existe");
         });
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -124,6 +127,7 @@ public class UserServiceImpl implements IUserService {
         user.setUpdated(LocalDateTime.now());
         this.userDao.saveUser(user);
 
+        this.confirmationTokenPasswordChangeService.deleteByFkUser(user);
         this.confirmationTokenEmailChangeService.deleteByToken(token);
 
     }
@@ -160,8 +164,7 @@ public class UserServiceImpl implements IUserService {
             );
         }
         this.confirmationTokenPasswordChangeService.saveConfirmationTokenPasswordChange(ct);
-        String link = "http://localhost:8080/app_movil_sensor/api/user/confirm-password?token=" + token;
-        emailService.send("Cambio de contraseña", mu.getUsername(), buildEmailForChangePassword(link, user.getName()));
+        emailService.send("Cambio de contraseña", mu.getUsername(), buildEmailForChangePassword(token, user.getName()));
 
     }
 
@@ -169,15 +172,19 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void confirmTokenPasswordChange(String token) {
 
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.getUserByEmail(mu.getUsername());
+
         ConfirmationTokenPasswordChange confirmationToken = this.confirmationTokenPasswordChangeService
-                .getConfirmationTokenPasswordChangeByToken(token);
+                .getConfirmationTokenPasswordChangeByTokenAndFkUser(token,user);
 
-        User user = confirmationToken.getFkUser();
-        user.setPassword(confirmationToken.getNewPassword());
-        user.setUpdated(LocalDateTime.now());
-        this.userDao.saveUser(user);
+        User userLinkedInToken = confirmationToken.getFkUser();
 
-        this.confirmationTokenPasswordChangeService.deleteByToken(token);
+        userLinkedInToken.setPassword(confirmationToken.getNewPassword());
+        userLinkedInToken.setUpdated(LocalDateTime.now());
+        this.userDao.saveUser(userLinkedInToken);
+
+        this.confirmationTokenPasswordChangeService.deleteByTokenAndFkUser(token, user);
     }
 
     @Override
@@ -272,7 +279,7 @@ public class UserServiceImpl implements IUserService {
                 "</div></div>";
     }
 
-    private String buildEmailForChangePassword(String link, String name) {
+    private String buildEmailForChangePassword(String token, String name) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -328,7 +335,7 @@ public class UserServiceImpl implements IUserService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola " + name+", </p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Alguien en tu cuenta ha tratado de cambiar la contraseña, en caso de que haya realizado este cambio, por favor hace clic en el siguiente enlace para confirmar el cambio de contraseña: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n </p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola " + name+", </p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Alguien en tu cuenta ha tratado de cambiar la contraseña, en caso de que haya realizado este cambio, por favor hace copia en la aplicacion el siguiente token para confirmar el cambio de contraseña: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">" + token + "</p></blockquote>\n </p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +

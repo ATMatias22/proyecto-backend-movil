@@ -18,8 +18,8 @@ public class ConfirmationTokenPasswordChangeDaoImpl implements IConfirmationToke
 
 
     @Override
-    public Optional<ConfirmationTokenPasswordChange> getByToken(String token) {
-        return this.confirmationTokenPasswordChangeRepository.findByToken(token);
+    public Optional<ConfirmationTokenPasswordChange> getByTokenAndFkUser(String token, User fkUser) {
+        return this.confirmationTokenPasswordChangeRepository.findByTokenAndFkUser(token,fkUser);
     }
 
     @Override
@@ -28,8 +28,13 @@ public class ConfirmationTokenPasswordChangeDaoImpl implements IConfirmationToke
     }
 
     @Override
-    public void deleteByToken(String token) {
-        this.confirmationTokenPasswordChangeRepository.deleteByToken(token);
+    public void deleteByTokenAndFkUser(String token, User fkUser) {
+        this.confirmationTokenPasswordChangeRepository.deleteByTokenAndFkUser(token, fkUser);
+    }
+
+    @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenPasswordChangeRepository.deleteByFkUser(fkUser);
     }
 
     @Override

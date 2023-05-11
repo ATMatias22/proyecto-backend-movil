@@ -18,9 +18,8 @@ public class ConfirmationTokenPasswordChangeServiceImpl implements IConfirmation
     private IConfirmationTokenPasswordChangeDao confirmationTokenPasswordChangeDao;
 
     @Override
-    public ConfirmationTokenPasswordChange getConfirmationTokenPasswordChangeByToken(String token) {
-        return this.confirmationTokenPasswordChangeDao.getByToken(token).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "Token invalido"));
-
+    public ConfirmationTokenPasswordChange getConfirmationTokenPasswordChangeByTokenAndFkUser(String token, User fkUser) {
+        return this.confirmationTokenPasswordChangeDao.getByTokenAndFkUser(token,fkUser).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el token para este usuario"));
     }
 
     @Override
@@ -30,8 +29,14 @@ public class ConfirmationTokenPasswordChangeServiceImpl implements IConfirmation
     }
 
     @Override
-    public void deleteByToken(String token) {
-        this.confirmationTokenPasswordChangeDao.deleteByToken(token);
+    public void deleteByTokenAndFkUser(String token, User fkUser) {
+        this.confirmationTokenPasswordChangeDao.deleteByTokenAndFkUser(token, fkUser);
+    }
+
+
+    @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenPasswordChangeDao.deleteByFkUser(fkUser);
     }
 
     @Override

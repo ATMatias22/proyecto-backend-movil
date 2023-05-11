@@ -7,11 +7,12 @@ import java.util.Optional;
 
 public interface IConfirmationTokenPasswordChangeDao {
 
-    Optional<ConfirmationTokenPasswordChange> getByToken(String token);
+    Optional<ConfirmationTokenPasswordChange> getByTokenAndFkUser(String token, User fkUser);
 
     void saveConfirmationTokenPasswordChange(ConfirmationTokenPasswordChange ct);
 
-    void deleteByToken(String token);
+    void deleteByTokenAndFkUser(String token, User fkUser);
+    void deleteByFkUser(User fkUser);
 
     Optional<ConfirmationTokenPasswordChange> getTokenByUser(User user);
 
