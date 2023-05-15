@@ -38,4 +38,6 @@ public interface IDeviceService {
 
     void confirmTokenChangeDevicePassword(String token);
 
+    List<InformativeMessage> getHistory(String deviceCode);
+
 }
