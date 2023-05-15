@@ -33,6 +33,12 @@ public class ConfirmationTokenEmailChangeDaoImpl  implements IConfirmationTokenE
     }
 
     @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenEmailChangeRepository.deleteByFkUser(fkUser);
+
+    }
+
+    @Override
     public Optional<ConfirmationTokenEmailChange> getTokenByUser(User user) {
         return this.confirmationTokenEmailChangeRepository.findByFkUser(user);
     }

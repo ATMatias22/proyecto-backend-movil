@@ -201,6 +201,8 @@ public class UserServiceImpl implements IUserService {
         }
 
         this.deviceService.deleteAllWhenDeleteUser(user);
+        this.confirmationTokenPasswordChangeService.deleteByFkUser(user);
+        this.confirmationTokenEmailChangeService.deleteByFkUser(user);
         this.userDao.deleteUser(user.getIdUser());
 
     }

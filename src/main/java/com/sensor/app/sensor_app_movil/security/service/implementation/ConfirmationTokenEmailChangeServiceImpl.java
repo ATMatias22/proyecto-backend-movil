@@ -32,6 +32,12 @@ public class ConfirmationTokenEmailChangeServiceImpl implements IConfirmationTok
     }
 
     @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenEmailChangeDao.deleteByFkUser( fkUser);
+
+    }
+
+    @Override
     public ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByUser(User user) {
         return this.confirmationTokenEmailChangeDao.getTokenByUser(user).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "Token no encontrado para este usuario"));
     }

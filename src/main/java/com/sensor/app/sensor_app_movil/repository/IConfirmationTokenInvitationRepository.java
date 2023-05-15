@@ -14,6 +14,10 @@ public interface IConfirmationTokenInvitationRepository extends JpaRepository<Co
 
     void deleteByToken(String token);
 
+    void deleteByFkUser(User user);
+
+    void deleteByFkDevice(Device device);
+
     Optional<ConfirmationTokenInvitation>  findByFkUserAndFkDevice(User user, Device device);
 
 }

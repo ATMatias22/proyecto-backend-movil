@@ -1,5 +1,6 @@
 package com.sensor.app.sensor_app_movil.security.dto.userdto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -9,6 +10,7 @@ import lombok.*;
 @ToString
 public class DeleteUserRequest {
 
+    @NotBlank(message = "La contraseña no puede ser nulo ni vacio")
     private String password;
 
 }

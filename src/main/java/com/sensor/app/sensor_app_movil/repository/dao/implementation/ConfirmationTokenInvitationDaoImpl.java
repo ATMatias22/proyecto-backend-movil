@@ -28,6 +28,16 @@ public class ConfirmationTokenInvitationDaoImpl implements IConfirmationTokenInv
     }
 
     @Override
+    public void deleteByFkUser(User user) {
+        this.confirmationTokenInvitationRepository.deleteByFkUser(user);
+    }
+
+    @Override
+    public void deleteByFkDevice(Device device) {
+        this.confirmationTokenInvitationRepository.deleteByFkDevice(device);
+    }
+
+    @Override
     public Optional<ConfirmationTokenInvitation> getByUserAndDevice(User user, Device device) {
         return this.confirmationTokenInvitationRepository.findByFkUserAndFkDevice(user, device);
 

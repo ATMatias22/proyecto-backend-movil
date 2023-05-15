@@ -62,7 +62,7 @@ public class UserController {
 
     @PostMapping(path = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> confirm(@RequestBody DeleteUserRequest du) {
+    public ResponseEntity<Void> deleteUser(@RequestBody @Valid DeleteUserRequest du) {
         this.userService.deleteUser(du.getPassword());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 

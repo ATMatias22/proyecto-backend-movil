@@ -11,6 +11,8 @@ public interface IConfirmationTokenEmailChangeRepository extends JpaRepository<C
     Optional<ConfirmationTokenEmailChange> findByTokenAndFkUser(String token, User user);
 
     void deleteByTokenAndFkUser(String token, User user);
+    void deleteByFkUser(User fkUser);
+
 
     Optional<ConfirmationTokenEmailChange>  findByFkUser(User user);
 
