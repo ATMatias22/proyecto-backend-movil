@@ -1,9 +1,6 @@
 package com.sensor.app.sensor_app_movil.service.implementation;
 
-import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenDevicePasswordChange;
-import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenInvitation;
-import com.sensor.app.sensor_app_movil.entity.Device;
-import com.sensor.app.sensor_app_movil.entity.Observer;
+import com.sensor.app.sensor_app_movil.entity.*;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.repository.dao.IDeviceDao;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
@@ -229,7 +226,15 @@ public class DeviceServiceImpl implements IDeviceService {
             this.deviceDao.save(device);
             //elimina a los usuarios que pertenecen a un dispositivo donde el usuario a eliminar es dueño
             this.observerService.deleteByFkDevice(device);
+            //elimina las confirmaciones que existen sobre ese dispositivo
+            this.confirmationTokenInvitationService.deleteByFkDevice(device);
         });
+
+        //elimina todas las solicitudes que tenia para ser invitado de algun dispositivo
+        this.confirmationTokenInvitationService.deleteByFkUser(user);
+
+        //elimina todas las solicitudes que tenia para cambiar el password del dispositivo
+        this.confirmationTokenDevicePasswordChangeService.deleteByFkUser(user);
 
         //elimina a todos los usuarios donde es invitado
         this.observerService.deleteAllByFkUser(user);

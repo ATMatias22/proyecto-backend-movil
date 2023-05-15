@@ -28,6 +28,16 @@ public class ConfirmationTokenInvitationServiceImpl implements IConfirmationToke
     }
 
     @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenInvitationDao.deleteByFkUser(fkUser);
+    }
+
+    @Override
+    public void deleteByFkDevice(Device fkDevice) {
+        this.confirmationTokenInvitationDao.deleteByFkDevice(fkDevice);
+    }
+
+    @Override
     public ConfirmationTokenInvitation getByUserAndDevice(User user, Device device) {
         return this.confirmationTokenInvitationDao.getByUserAndDevice(user,device).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "Token no encontrado para este usuario en este dispositivo"));
     }

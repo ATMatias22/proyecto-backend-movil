@@ -4,6 +4,7 @@ import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenDevicePasswordCha
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.repository.IConfirmationTokenDevicePasswordChangeRepository;
 import com.sensor.app.sensor_app_movil.repository.dao.IConfirmationTokenDevicePasswordChangeDao;
+import com.sensor.app.sensor_app_movil.security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +31,11 @@ public class ConfirmationTokenDevicePasswordChangeDaoImpl implements IConfirmati
     @Override
     public void deleteByToken(String token) {
         this.confirmationTokenDevicePasswordChangeRepository.deleteByToken(token);
+    }
+
+    @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenDevicePasswordChangeRepository.deleteByFkUser(fkUser);
     }
 
     @Override

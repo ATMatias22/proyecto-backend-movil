@@ -12,6 +12,9 @@ public interface IConfirmationTokenInvitationDao {
     Optional<ConfirmationTokenInvitation> getByToken(String token);
 
     void deleteByToken(String token);
+    void deleteByFkUser(User user);
+
+    void deleteByFkDevice(Device device);
 
     Optional<ConfirmationTokenInvitation>  getByUserAndDevice(User user, Device device);
 

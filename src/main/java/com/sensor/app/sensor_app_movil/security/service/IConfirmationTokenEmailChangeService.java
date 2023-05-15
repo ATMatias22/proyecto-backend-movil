@@ -10,6 +10,7 @@ public interface IConfirmationTokenEmailChangeService {
     void saveConfirmationTokenEmailChange(ConfirmationTokenEmailChange cte);
 
     void deleteByTokenAndFkUser (String token, User fkUser);
+    void deleteByFkUser (User fkUser);
 
     ConfirmationTokenEmailChange getConfirmationTokenEmailChangeByUser(User user);
 

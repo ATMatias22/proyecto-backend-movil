@@ -4,6 +4,7 @@ import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenDevicePasswordCha
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.repository.dao.IConfirmationTokenDevicePasswordChangeDao;
+import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.service.IConfirmationTokenDevicePasswordChangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,11 @@ public class ConfirmationTokenDevicePasswordChangeServiceImpl implements IConfir
     @Override
     public void deleteByToken(String token) {
         this.confirmationTokenDevicePasswordChangeDao.deleteByToken(token);
+    }
+
+    @Override
+    public void deleteByFkUser(User fkUser) {
+        this.confirmationTokenDevicePasswordChangeDao.deleteByFkUser(fkUser);
     }
 
     @Override

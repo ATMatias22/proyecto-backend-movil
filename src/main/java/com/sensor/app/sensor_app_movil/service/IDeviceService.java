@@ -2,6 +2,7 @@ package com.sensor.app.sensor_app_movil.service;
 
 
 import com.sensor.app.sensor_app_movil.entity.Device;
+import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 
 import java.util.List;

@@ -13,6 +13,7 @@ public interface IConfirmationTokenEmailChangeDao {
     void saveConfirmationTokenEmailChange(ConfirmationTokenEmailChange cte);
 
     void deleteByTokenAndFkUser(String token, User fkUser);
+    void deleteByFkUser(User fkUser);
 
     Optional<ConfirmationTokenEmailChange> getTokenByUser(User user);
 
