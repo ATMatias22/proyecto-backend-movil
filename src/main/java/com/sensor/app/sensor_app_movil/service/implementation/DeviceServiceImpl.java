@@ -351,6 +351,25 @@ public class DeviceServiceImpl implements IDeviceService {
         this.confirmationTokenDevicePasswordChangeService.deleteByToken(token);
     }
 
+    @Override
+    public List<InformativeMessage> getHistory(String deviceCode) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = this.userService.getUserByEmail(mu.getUsername());
+
+        Device device = this.getByDeviceCode(deviceCode);
+
+        if (device.getFkUser() != null) {
+            if((device.getFkUser().getIdUser() == mu.getId()) || (this.observerService.existsByUserAndDevice(user,device))){
+                return informativeMessageService.findByFkDevice(device);
+            }else{
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puedes ver el historial de este dispositivo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
+        }
+
+    }
+
 
     private String buildEmailForConfirmInvitation(String link, String email) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +

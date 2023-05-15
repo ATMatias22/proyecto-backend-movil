@@ -5,7 +5,9 @@ import com.sensor.app.sensor_app_movil.dto.device.request.*;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
+import com.sensor.app.sensor_app_movil.dto.informativemessage.response.InformativeMessageResponse;
 import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
+import com.sensor.app.sensor_app_movil.mappers.InformativeMessageMapper;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class DeviceController {
 
     @Autowired
     private DeviceMapper deviceMapper;
+
+    @Autowired
+    private InformativeMessageMapper informativeMessageMapper;
 
     @GetMapping(path = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -125,6 +130,13 @@ public class DeviceController {
     public ResponseEntity<Void> confirmChangeDevicePassword(@RequestBody @Valid ConfirmChangeDevicePasswordRequest confirmChangeDevicePasswordRequest) {
         this.deviceService.confirmTokenChangeDevicePassword(confirmChangeDevicePasswordRequest.getToken());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = "/{deviceCode}/history", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<InformativeMessageResponse>> getHistory(@PathVariable("deviceCode") String deviceCode ) {
+        List<InformativeMessageResponse> history = this.deviceService.getHistory(deviceCode).stream().map( informativeMessage -> this.informativeMessageMapper.toInformativeMessageResponse(informativeMessage)).toList();
+        return new ResponseEntity<>(history,HttpStatus.OK);
     }
 
 
