@@ -60,4 +60,9 @@ public class ObserverServiceImpl implements IObserverService {
     public int countByDevice(Device fkDevice) {
         return this.observerDao.countByDevice(fkDevice);
     }
+
+    @Override
+    public List<Observer> findByFkDevice(Device fkDevice) {
+        return this.observerDao.findByFkDevice(fkDevice);
+    }
 }

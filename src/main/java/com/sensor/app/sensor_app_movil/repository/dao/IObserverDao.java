@@ -25,4 +25,7 @@ public interface IObserverDao{
     int countByDevice(Device fkDevice);
     List<Observer> getObserversByFkUser(User fkUser, Pageable pageable);
 
+    List<Observer> findByFkDevice(Device fkDevice);
+
+
 }

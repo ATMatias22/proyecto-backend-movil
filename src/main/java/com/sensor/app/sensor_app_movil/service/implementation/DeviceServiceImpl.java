@@ -370,6 +370,23 @@ public class DeviceServiceImpl implements IDeviceService {
 
     }
 
+    @Override
+    public List<Observer> getObserversOnTheDevice(String deviceCode) {
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede ver los invitados del dispositivo, solo el dueño puede hacerlo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
+        }
+
+
+        return this.observerService.findByFkDevice(device);
+    }
+
 
     private String buildEmailForConfirmInvitation(String link, String email) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +

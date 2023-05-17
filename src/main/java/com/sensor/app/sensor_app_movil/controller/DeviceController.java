@@ -6,8 +6,10 @@ import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceRespons
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.dto.informativemessage.response.InformativeMessageResponse;
+import com.sensor.app.sensor_app_movil.dto.observer.response.ObserverResponse;
 import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
 import com.sensor.app.sensor_app_movil.mappers.InformativeMessageMapper;
+import com.sensor.app.sensor_app_movil.mappers.ObserverMapper;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,11 @@ public class DeviceController {
 
     @Autowired
     private DeviceMapper deviceMapper;
-
     @Autowired
     private InformativeMessageMapper informativeMessageMapper;
+
+    @Autowired
+    private ObserverMapper observerMapper;
 
     @GetMapping(path = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -137,6 +141,14 @@ public class DeviceController {
     public ResponseEntity<List<InformativeMessageResponse>> getHistory(@PathVariable("deviceCode") String deviceCode ) {
         List<InformativeMessageResponse> history = this.deviceService.getHistory(deviceCode).stream().map( informativeMessage -> this.informativeMessageMapper.toInformativeMessageResponse(informativeMessage)).toList();
         return new ResponseEntity<>(history,HttpStatus.OK);
+    }
+
+
+    @GetMapping(path = "/{deviceCode}/observer", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ObserverResponse>> getObserversOnTheDevice(@PathVariable("deviceCode") String deviceCode ) {
+        List<ObserverResponse> observers = this.deviceService.getObserversOnTheDevice(deviceCode).stream().map( observer -> this.observerMapper.toObserverResponse(observer)).toList();
+        return new ResponseEntity<>(observers,HttpStatus.OK);
     }
 
 

@@ -23,4 +23,6 @@ public interface IObserverRepository extends JpaRepository<Observer, Long> {
 
     List<Observer> findByFkUser(User fkUser, Pageable pageable);
 
+    List<Observer> findByFkDevice(Device fkDevice);
+
 }
