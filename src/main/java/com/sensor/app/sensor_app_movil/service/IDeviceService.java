@@ -3,6 +3,7 @@ package com.sensor.app.sensor_app_movil.service;
 
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
+import com.sensor.app.sensor_app_movil.entity.Observer;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 
 import java.util.List;
@@ -39,5 +40,8 @@ public interface IDeviceService {
     void confirmTokenChangeDevicePassword(String token);
 
     List<InformativeMessage> getHistory(String deviceCode);
+
+    List<Observer> getObserversOnTheDevice(String deviceCode);
+
 
 }

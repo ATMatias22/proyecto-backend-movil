@@ -58,4 +58,9 @@ public class ObserverDaoImpl implements IObserverDao {
     public List<Observer> getObserversByFkUser(User fkUser, Pageable pageable) {
         return this.observerRepository.findByFkUser(fkUser,pageable);
     }
+
+    @Override
+    public List<Observer> findByFkDevice(Device fkDevice) {
+        return this.observerRepository.findByFkDevice(fkDevice);
+    }
 }
