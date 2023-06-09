@@ -1,5 +1,6 @@
 package com.sensor.app.sensor_app_movil.mappers;
 
+import com.sensor.app.sensor_app_movil.dto.informativemessage.request.AddInformativeMessageRequest;
 import com.sensor.app.sensor_app_movil.dto.informativemessage.response.InformativeMessageResponse;
 import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
 import org.mapstruct.Mapper;

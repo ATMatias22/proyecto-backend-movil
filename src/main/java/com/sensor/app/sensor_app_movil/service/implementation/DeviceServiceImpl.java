@@ -528,7 +528,7 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
 
-    private Device getByDeviceCode(String deviceCode) {
+    public Device getByDeviceCode(String deviceCode) {
         return this.deviceDao.getByDeviceCode(deviceCode).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el dispositivo con codigo: " + deviceCode));
     }
 
