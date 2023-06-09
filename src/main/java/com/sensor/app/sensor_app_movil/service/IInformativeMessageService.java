@@ -11,4 +11,6 @@ public interface IInformativeMessageService {
 
     List<InformativeMessage> findByFkDevice(Device fkDevice);
 
+    void save(String deviceCode, String message, String token);
+
 }

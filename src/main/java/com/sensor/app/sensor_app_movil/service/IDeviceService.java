@@ -43,5 +43,6 @@ public interface IDeviceService {
 
     List<Observer> getObserversOnTheDevice(String deviceCode);
 
+    Device getByDeviceCode(String deviceCode);
 
 }

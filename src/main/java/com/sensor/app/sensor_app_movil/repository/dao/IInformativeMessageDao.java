@@ -10,5 +10,8 @@ public interface IInformativeMessageDao {
     void deleteByFkDevice(Device fkDevice);
 
     List<InformativeMessage> findByFkDevice(Device fkDevice);
+
+
+    void save(InformativeMessage informativeMessage);
     
 }

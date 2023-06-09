@@ -24,4 +24,9 @@ public class InformativeMessageDaoImpl implements IInformativeMessageDao {
     public List<InformativeMessage> findByFkDevice(Device fkDevice) {
         return this.informativeMessageRepository.findByFkDevice(fkDevice);
     }
+
+    @Override
+    public void save(InformativeMessage informativeMessage) {
+        this.informativeMessageRepository.save(informativeMessage);
+    }
 }
