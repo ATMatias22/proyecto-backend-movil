@@ -1,6 +1,8 @@
 package com.sensor.app.sensor_app_movil.service;
 
 
+import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
 import com.sensor.app.sensor_app_movil.entity.Observer;
@@ -13,7 +15,7 @@ public interface IDeviceService {
 
     void linkUser(String deviceCode, String password);
 
-    Device getByDeviceCodeForOwner(String deviceCode);
+    ObservedDeviceResponse getByDeviceCodeForOwner(String deviceCode);
 
     void addObserver(String email, String deviceCode);
 
@@ -29,9 +31,9 @@ public interface IDeviceService {
 
     void deleteAllWhenDeleteUser(User user);
 
-    List<Device> getAllByFkUser(int page);
+    List<OwnDevicesResponse> getAllByFkUser(int page);
 
-    List<Device> getAllByObserver(int page);
+    List<ObservedDeviceResponse> getAllByObserver(int page);
 
     void changeDeviceName(String deviceCode, String newName);
 

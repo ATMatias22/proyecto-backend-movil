@@ -42,14 +42,14 @@ public class DeviceController {
     @GetMapping(path = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<OwnDevicesResponse>> getDeviceOwn(@RequestParam(name = "page", defaultValue = "0") int page) {
-       List<OwnDevicesResponse> odr = this.deviceService.getAllByFkUser(page).stream().map(device -> deviceMapper.toOwnDevicesResponse(device)).toList();
+       List<OwnDevicesResponse> odr = this.deviceService.getAllByFkUser(page);
         return new ResponseEntity<>(odr, HttpStatus.OK);
     }
 
     @GetMapping(path = "/observed", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ObservedDeviceResponse>> getDeviceObserved(@RequestParam(name = "page", defaultValue = "0") int page) {
-        List<ObservedDeviceResponse> odr = this.deviceService.getAllByObserver(page).stream().map(device -> deviceMapper.toObservedDeviceResponse(device)).toList();
+        List<ObservedDeviceResponse> odr = this.deviceService.getAllByObserver(page);
         return new ResponseEntity<>(odr, HttpStatus.OK);
     }
 
@@ -109,9 +109,8 @@ public class DeviceController {
     @GetMapping(path = "/{deviceCode}/own", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OwnDeviceResponse>  getByDeviceCodeForOwner(@PathVariable("deviceCode") String deviceCode ) {
-        OwnDeviceResponse device = this.deviceMapper.toOwnDeviceResponse(this.deviceService.getByDeviceCodeForOwner(deviceCode));
-        System.out.println(device);
-        return new ResponseEntity<>(device,HttpStatus.OK);
+        OwnDeviceResponse odr = this.deviceMapper.toOwnDeviceResponse(this.deviceService.getByDeviceCodeForOwner(deviceCode));
+        return new ResponseEntity<>(odr,HttpStatus.OK);
     }
 
     @PutMapping(path ="/change-name", consumes = MediaType.APPLICATION_JSON_VALUE)

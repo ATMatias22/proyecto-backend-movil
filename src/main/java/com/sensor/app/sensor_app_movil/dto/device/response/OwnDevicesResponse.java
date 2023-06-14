@@ -17,5 +17,6 @@ public class OwnDevicesResponse {
     private int linkedPersons;
     private Boolean isDeviceOn;
     private Boolean isWifiOn;
+    private String message;
 
 }
