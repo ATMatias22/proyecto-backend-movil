@@ -1,29 +1,36 @@
 package com.sensor.app.sensor_app_movil.service.implementation;
 
+import com.sensor.app.sensor_app_movil.dto.arduino.response.DeviceStatusResponse;
+import com.sensor.app.sensor_app_movil.dto.arduino.response.DeviceWiFiStatusResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.entity.*;
+import com.sensor.app.sensor_app_movil.entity.Observer;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
+import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
 import com.sensor.app.sensor_app_movil.repository.dao.IDeviceDao;
 import com.sensor.app.sensor_app_movil.security.dto.MainUser;
-import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenPasswordChange;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.service.*;
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -45,6 +52,12 @@ public class DeviceServiceImpl implements IDeviceService {
 
     @Autowired
     private IConfirmationTokenDevicePasswordChangeService confirmationTokenDevicePasswordChangeService;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private DeviceMapper deviceMapper;
 
     private static final String DEVICE_WITHOUT_OWNER_MESSAGE = "Este dispositivo no tiene dueño";
 
@@ -72,7 +85,7 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public Device getByDeviceCodeForOwner(String deviceCode) {
+    public ObservedDeviceResponse getByDeviceCodeForOwner(String deviceCode) {
         Device device = this.getByDeviceCode(deviceCode);
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -84,7 +97,52 @@ public class DeviceServiceImpl implements IDeviceService {
             }
         }
 
-        return device;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "hola");
+        HttpEntity<DeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
+        HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
+
+        ResponseEntity<DeviceStatusResponse> responseDeviceStatus = null;
+        ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
+        try {
+            responseDeviceStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<DeviceStatusResponse>() {
+            });
+            responseDeviceWiFiStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
+            });
+        } catch (HttpClientErrorException.NotFound enf) {
+            System.out.println(enf.getMessage());
+            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "Arduino no encontro el recurso");
+        } catch (HttpClientErrorException.Forbidden efb) {
+            System.out.println(efb.getMessage());
+            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "Arduino no te permite el acceso");
+        } catch (ResourceAccessException rae) {
+            //ATRAPA ERROR 5XX
+            System.out.println(rae.getMessage());
+            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
+        }
+
+        DeviceStatusResponse deviceStatusResponse = responseDeviceStatus.getBody();
+
+        // Obtener el mensaje y el estado de la respuesta
+        String messageDeviceStatus = deviceStatusResponse.getMessage();
+        Boolean statusDeviceStatus = deviceStatusResponse.getOn();
+
+        // Utilizar los datos obtenidos según sea necesario
+        System.out.println("Mensaje estado device: " + messageDeviceStatus);
+        System.out.println("Estado estado device: " + statusDeviceStatus);
+
+        DeviceWiFiStatusResponse deviceWiFiStatusResponse = responseDeviceWiFiStatus.getBody();
+
+        // Obtener el mensaje y el estado de la respuesta
+        String messageDeviceWiFiStatus = deviceWiFiStatusResponse.getMessage();
+        Boolean statusDeviceWiFiStatus = deviceWiFiStatusResponse.getOn();
+
+        // Utilizar los datos obtenidos según sea necesario
+        System.out.println("Mensaje estado wifi: " + messageDeviceWiFiStatus);
+        System.out.println("Estado estado wifi: " + statusDeviceWiFiStatus);
+
+        return this.deviceMapper.toObservedDeviceResponse(device, statusDeviceStatus, statusDeviceWiFiStatus, "Se pudo establecer conexion con el arduino correctamente");
+
     }
 
 
@@ -242,15 +300,66 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public List<Device> getAllByFkUser(int page) {
+    public List<OwnDevicesResponse> getAllByFkUser(int page) {
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = this.userService.getUserByEmail(mu.getUsername());
         Pageable pageable = PageRequest.of(page, 5);
-        return this.deviceDao.getAllByFkUser(user, pageable);
+        List<Device> devices = this.deviceDao.getAllByFkUser(user, pageable);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "hola");
+        HttpEntity<DeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
+        HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
+
+        return devices.stream().map((device) -> {
+            ResponseEntity<DeviceStatusResponse> responseDeviceStatus = null;
+            ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
+            try {
+                responseDeviceStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<DeviceStatusResponse>() {
+                });
+                responseDeviceWiFiStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
+                });
+            } catch (HttpClientErrorException.NotFound enf) {
+                System.out.println(enf.getMessage());
+                return this.deviceMapper.toOwnDevicesResponse(device, null, null, "Arduino no encontro el recurso");
+            } catch (HttpClientErrorException.Forbidden efb) {
+                System.out.println(efb.getMessage());
+                return this.deviceMapper.toOwnDevicesResponse(device, null, null, "Arduino no te permite el acceso");
+            } catch (ResourceAccessException rae) {
+                //ATRAPA ERROR 5XX
+                System.out.println(rae.getMessage());
+                return this.deviceMapper.toOwnDevicesResponse(device, null, null, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
+            }
+
+            DeviceStatusResponse deviceStatusResponse = responseDeviceStatus.getBody();
+
+            // Obtener el mensaje y el estado de la respuesta
+            String messageDeviceStatus = deviceStatusResponse.getMessage();
+            Boolean statusDeviceStatus = deviceStatusResponse.getOn();
+
+            // Utilizar los datos obtenidos según sea necesario
+            System.out.println("Mensaje estado device: " + messageDeviceStatus);
+            System.out.println("Estado estado device: " + statusDeviceStatus);
+
+            DeviceWiFiStatusResponse deviceWiFiStatusResponse = responseDeviceWiFiStatus.getBody();
+
+            // Obtener el mensaje y el estado de la respuesta
+            String messageDeviceWiFiStatus = deviceWiFiStatusResponse.getMessage();
+            Boolean statusDeviceWiFiStatus = deviceWiFiStatusResponse.getOn();
+
+            // Utilizar los datos obtenidos según sea necesario
+            System.out.println("Mensaje estado wifi: " + messageDeviceWiFiStatus);
+            System.out.println("Estado estado wifi: " + statusDeviceWiFiStatus);
+
+            return this.deviceMapper.toOwnDevicesResponse(device, statusDeviceStatus, statusDeviceWiFiStatus, "Se pudo establecer conexion con el arduino correctamente");
+
+        }).toList();
+
+
     }
 
     @Override
-    public List<Device> getAllByObserver(int page) {
+    public List<ObservedDeviceResponse> getAllByObserver(int page) {
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Pageable pageable = PageRequest.of(page, 5);
 
@@ -260,8 +369,58 @@ public class DeviceServiceImpl implements IDeviceService {
             devices.add(observer.getFkDevice());
         });
 
-        return devices;
-    }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "hola");
+        HttpEntity<DeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
+        HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
+
+
+        return devices.stream().map((device) -> {
+        ResponseEntity<DeviceStatusResponse> responseDeviceStatus = null;
+        ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
+        try {
+            responseDeviceStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<DeviceStatusResponse>() {
+            });
+            responseDeviceWiFiStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
+            });
+        } catch (HttpClientErrorException.NotFound enf) {
+            System.out.println(enf.getMessage());
+            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "Arduino no encontro el recurso");
+        } catch (HttpClientErrorException.Forbidden efb) {
+            System.out.println(efb.getMessage());
+            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "Arduino no te permite el acceso");
+        } catch (ResourceAccessException rae) {
+            //ATRAPA ERROR 5XX
+            System.out.println(rae.getMessage());
+            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
+        }
+
+        DeviceStatusResponse deviceStatusResponse = responseDeviceStatus.getBody();
+
+        // Obtener el mensaje y el estado de la respuesta
+        String messageDeviceStatus = deviceStatusResponse.getMessage();
+        Boolean statusDeviceStatus = deviceStatusResponse.getOn();
+
+        // Utilizar los datos obtenidos según sea necesario
+        System.out.println("Mensaje estado device: " + messageDeviceStatus);
+        System.out.println("Estado estado device: " + statusDeviceStatus);
+
+        DeviceWiFiStatusResponse deviceWiFiStatusResponse = responseDeviceWiFiStatus.getBody();
+
+        // Obtener el mensaje y el estado de la respuesta
+        String messageDeviceWiFiStatus = deviceWiFiStatusResponse.getMessage();
+        Boolean statusDeviceWiFiStatus = deviceWiFiStatusResponse.getOn();
+
+        // Utilizar los datos obtenidos según sea necesario
+        System.out.println("Mensaje estado wifi: " + messageDeviceWiFiStatus);
+        System.out.println("Estado estado wifi: " + statusDeviceWiFiStatus);
+
+        return this.deviceMapper.toObservedDeviceResponse(device, statusDeviceStatus, statusDeviceWiFiStatus, "Se pudo establecer conexion con el arduino correctamente");
+
+
+    }).toList();
+
+}
 
     @Override
     public void changeDeviceName(String deviceCode, String newName) {
@@ -340,8 +499,8 @@ public class DeviceServiceImpl implements IDeviceService {
         Device device = confirmationToken.getFkDevice();
 
 
-        if(device.getFkUser().getIdUser() != mu.getId()){
-            throw new GeneralException(HttpStatus.UNAUTHORIZED,"EL dispositivo ya no es suyo");
+        if (device.getFkUser().getIdUser() != mu.getId()) {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, "EL dispositivo ya no es suyo");
         }
 
         device.setPassword(confirmationToken.getNewPassword());
@@ -359,9 +518,9 @@ public class DeviceServiceImpl implements IDeviceService {
         Device device = this.getByDeviceCode(deviceCode);
 
         if (device.getFkUser() != null) {
-            if((device.getFkUser().getIdUser() == mu.getId()) || (this.observerService.existsByUserAndDevice(user,device))){
+            if ((device.getFkUser().getIdUser() == mu.getId()) || (this.observerService.existsByUserAndDevice(user, device))) {
                 return informativeMessageService.findByFkDevice(device);
-            }else{
+            } else {
                 throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puedes ver el historial de este dispositivo");
             }
         } else {
@@ -514,7 +673,7 @@ public class DeviceServiceImpl implements IDeviceService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">  has tratado de cambiar la contraseña del dispositivo con codigo: \"" + deviceCode + "\" con nombre \"" + deviceName + "\"  si has sido tu copia el siguiente token en la aplicacion: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">"+token+"</p></blockquote>\n </p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hola,</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">  has tratado de cambiar la contraseña del dispositivo con codigo: \"" + deviceCode + "\" con nombre \"" + deviceName + "\"  si has sido tu copia el siguiente token en la aplicacion: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">" + token + "</p></blockquote>\n </p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -531,5 +690,6 @@ public class DeviceServiceImpl implements IDeviceService {
     public Device getByDeviceCode(String deviceCode) {
         return this.deviceDao.getByDeviceCode(deviceCode).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el dispositivo con codigo: " + deviceCode));
     }
+
 
 }

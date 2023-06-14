@@ -31,9 +31,6 @@ public class Device {
     @Column(name="password", length = 75, nullable = false)
     private String password;
 
-    @Column(name="is_on", nullable = false, columnDefinition ="TINYINT(1) DEFAULT 0")
-    private boolean isOn;
-
     @Column(name = "create_date",insertable = false,  updatable = false, nullable = false, columnDefinition="DATETIME default NOW()")
     private LocalDateTime created;
 
@@ -45,9 +42,5 @@ public class Device {
     @JsonIgnore
     private User fkUser;
 
-    @OneToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_WiFi", insertable = false, updatable = false )
-    @JsonIgnore
-    private WiFi fkWiFi;
 
 }

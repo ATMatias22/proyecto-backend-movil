@@ -22,4 +22,7 @@ public class ObservedDeviceResponse {
     private Boolean isDeviceOn;
     private Boolean isWifiOn;
 
+    private String message;
+
+
 }

@@ -17,33 +17,35 @@ public abstract class DeviceMapper {
     protected IObserverService observerService;
 
     @Mappings({
-            @Mapping(source = "name", target = "deviceName"),
-            @Mapping(source = "deviceCode", target = "deviceCode"),
+            @Mapping(source = "device.name", target = "deviceName"),
+            @Mapping(source = "device.deviceCode", target = "deviceCode"),
             @Mapping(target = "linkedPersons", expression = "java(observerService.countByDevice(device))" ),
-            @Mapping(source = "on", target = "isDeviceOn"),
-            @Mapping(source = "device.fkWiFi.state", target = "isWifiOn"),
+            @Mapping(source = "onDevice", target = "isDeviceOn"),
+            @Mapping(source = "onWifi", target = "isWifiOn"),
+            @Mapping(source = "message", target = "message"),
     })
-    public abstract OwnDevicesResponse toOwnDevicesResponse (Device device);
+    public abstract OwnDevicesResponse toOwnDevicesResponse (Device device, Boolean onDevice, Boolean onWifi, String message);
 
 
 
     @Mappings({
-            @Mapping(source = "name", target = "deviceName"),
+            @Mapping(source = "deviceName", target = "deviceName"),
             @Mapping(source = "deviceCode", target = "deviceCode"),
-            @Mapping(source = "on", target = "isDeviceOn"),
+            @Mapping(source = "isDeviceOn", target = "isDeviceOn"),
     })
-    public abstract OwnDeviceResponse toOwnDeviceResponse (Device device);
+    public abstract OwnDeviceResponse toOwnDeviceResponse (ObservedDeviceResponse device);
 
 
     @Mappings({
-            @Mapping(source = "name", target = "deviceName"),
-            @Mapping(source = "deviceCode", target = "deviceCode"),
-            @Mapping(target = "linkedPersons", expression = "java(observerService.countByDevice(device))" ),
+            @Mapping(source = "device.name", target = "deviceName"),
+            @Mapping(source = "device.deviceCode", target = "deviceCode"),
+            @Mapping(target = "device.linkedPersons", expression = "java(observerService.countByDevice(device))" ),
             @Mapping(source = "device.fkUser.email", target = "ownerEmail"),
-            @Mapping(source = "on", target = "isDeviceOn"),
-            @Mapping(source = "device.fkWiFi.state", target = "isWifiOn"),
+            @Mapping(source = "onDevice", target = "isDeviceOn"),
+            @Mapping(source = "onWifi", target = "isWifiOn"),
+            @Mapping(source = "message", target = "message"),
     })
-    public abstract ObservedDeviceResponse toObservedDeviceResponse (Device device);
+    public abstract ObservedDeviceResponse toObservedDeviceResponse (Device device, Boolean onDevice, Boolean onWifi, String message);
 
 
 
