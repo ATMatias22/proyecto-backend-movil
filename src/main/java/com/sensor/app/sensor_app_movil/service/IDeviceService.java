@@ -46,5 +46,8 @@ public interface IDeviceService {
     List<Observer> getObserversOnTheDevice(String deviceCode);
 
     Device getByDeviceCode(String deviceCode);
+    
+    void changeWiFi(String deviceCode, String ssid, String password);
+
 
 }
