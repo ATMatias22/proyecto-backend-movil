@@ -42,5 +42,4 @@ public class Device {
     @JsonIgnore
     private User fkUser;
 
-
 }

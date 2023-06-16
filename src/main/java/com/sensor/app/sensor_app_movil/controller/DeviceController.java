@@ -7,6 +7,7 @@ import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.dto.informativemessage.response.InformativeMessageResponse;
 import com.sensor.app.sensor_app_movil.dto.observer.response.ObserverResponse;
+import com.sensor.app.sensor_app_movil.dto.wifi.request.ChangeWiFiRequest;
 import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
 import com.sensor.app.sensor_app_movil.mappers.InformativeMessageMapper;
 import com.sensor.app.sensor_app_movil.mappers.ObserverMapper;
@@ -150,5 +151,10 @@ public class DeviceController {
         return new ResponseEntity<>(observers,HttpStatus.OK);
     }
 
-
+    @PutMapping(path ="/change-device-wifi", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changeDeviceWiFi(@RequestBody @Valid ChangeWiFiRequest changeWiFiRequest) {
+        this.deviceService.changeWiFi(changeWiFiRequest.getDeviceCode(), changeWiFiRequest.getSsid(), changeWiFiRequest.getPassword());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
