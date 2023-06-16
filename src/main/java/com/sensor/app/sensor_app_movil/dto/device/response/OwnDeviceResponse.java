@@ -17,4 +17,8 @@ public class OwnDeviceResponse {
 
     private Boolean isDeviceOn;
 
+    private Boolean isWifiOn;
+
+    private String message;
+
 }

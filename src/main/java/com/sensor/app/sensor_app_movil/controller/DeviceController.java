@@ -110,7 +110,7 @@ public class DeviceController {
     @GetMapping(path = "/{deviceCode}/own", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OwnDeviceResponse>  getByDeviceCodeForOwner(@PathVariable("deviceCode") String deviceCode ) {
-        OwnDeviceResponse odr = this.deviceMapper.toOwnDeviceResponse(this.deviceService.getByDeviceCodeForOwner(deviceCode));
+        OwnDeviceResponse odr = this.deviceService.getByDeviceCodeForOwner(deviceCode);
         return new ResponseEntity<>(odr,HttpStatus.OK);
     }
 
