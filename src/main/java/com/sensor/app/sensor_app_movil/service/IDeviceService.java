@@ -2,6 +2,7 @@ package com.sensor.app.sensor_app_movil.service;
 
 
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
@@ -15,7 +16,7 @@ public interface IDeviceService {
 
     void linkUser(String deviceCode, String password);
 
-    ObservedDeviceResponse getByDeviceCodeForOwner(String deviceCode);
+    OwnDeviceResponse getByDeviceCodeForOwner(String deviceCode);
 
     void addObserver(String email, String deviceCode);
 

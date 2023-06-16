@@ -4,6 +4,7 @@ import com.sensor.app.sensor_app_movil.dto.arduino.response.DeviceStatusResponse
 import com.sensor.app.sensor_app_movil.dto.arduino.response.DeviceWiFiStatusResponse;
 import com.sensor.app.sensor_app_movil.dto.arduino.response.SaveWifiResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
 import com.sensor.app.sensor_app_movil.entity.*;
 import com.sensor.app.sensor_app_movil.entity.Observer;
@@ -86,7 +87,7 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
     @Override
-    public ObservedDeviceResponse getByDeviceCodeForOwner(String deviceCode) {
+    public OwnDeviceResponse getByDeviceCodeForOwner(String deviceCode) {
         Device device = this.getByDeviceCode(deviceCode);
         MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -112,14 +113,14 @@ public class DeviceServiceImpl implements IDeviceService {
             });
         } catch (HttpClientErrorException.NotFound enf) {
             System.out.println(enf.getMessage());
-            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "Arduino no encontro el recurso");
+            return this.deviceMapper.toOwnDeviceResponse(device, null, null, "Arduino no encontro el recurso");
         } catch (HttpClientErrorException.Forbidden efb) {
             System.out.println(efb.getMessage());
-            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "Arduino no te permite el acceso");
+            return this.deviceMapper.toOwnDeviceResponse(device, null, null, "Arduino no te permite el acceso");
         } catch (ResourceAccessException rae) {
             //ATRAPA ERROR 5XX
             System.out.println(rae.getMessage());
-            return this.deviceMapper.toObservedDeviceResponse(device, null, null, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
+            return this.deviceMapper.toOwnDeviceResponse(device, null, null, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
         }
 
         DeviceStatusResponse deviceStatusResponse = responseDeviceStatus.getBody();
@@ -142,7 +143,7 @@ public class DeviceServiceImpl implements IDeviceService {
         System.out.println("Mensaje estado wifi: " + messageDeviceWiFiStatus);
         System.out.println("Estado estado wifi: " + statusDeviceWiFiStatus);
 
-        return this.deviceMapper.toObservedDeviceResponse(device, statusDeviceStatus, statusDeviceWiFiStatus, "Se pudo establecer conexion con el arduino correctamente");
+        return this.deviceMapper.toOwnDeviceResponse(device, statusDeviceStatus, statusDeviceWiFiStatus, "Se pudo establecer conexion con el arduino correctamente");
 
     }
 

@@ -29,11 +29,13 @@ public abstract class DeviceMapper {
 
 
     @Mappings({
-            @Mapping(source = "deviceName", target = "deviceName"),
-            @Mapping(source = "deviceCode", target = "deviceCode"),
+            @Mapping(source = "device.name", target = "deviceName"),
+            @Mapping(source = "device.deviceCode", target = "deviceCode"),
             @Mapping(source = "isDeviceOn", target = "isDeviceOn"),
+            @Mapping(source = "isWifiOn", target = "isWifiOn"),
+            @Mapping(source = "message", target = "message"),
     })
-    public abstract OwnDeviceResponse toOwnDeviceResponse (ObservedDeviceResponse device);
+    public abstract OwnDeviceResponse toOwnDeviceResponse (Device device, Boolean isDeviceOn, Boolean isWifiOn, String message);
 
 
     @Mappings({
