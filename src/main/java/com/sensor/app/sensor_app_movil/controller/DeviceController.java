@@ -5,7 +5,7 @@ import com.sensor.app.sensor_app_movil.dto.device.request.*;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
-import com.sensor.app.sensor_app_movil.dto.device.response.TurnOnDeviceResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.DeviceStatusResponse;
 import com.sensor.app.sensor_app_movil.dto.informativemessage.response.InformativeMessageResponse;
 import com.sensor.app.sensor_app_movil.dto.observer.response.ObserverResponse;
 import com.sensor.app.sensor_app_movil.dto.wifi.request.ChangeWiFiRequest;
@@ -161,8 +161,15 @@ public class DeviceController {
 
     @PostMapping(path ="/turn-on", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<TurnOnDeviceResponse> turnOnDevice(@RequestBody @Valid TurnOnDeviceRequest turnOnDeviceRequest) {
-        TurnOnDeviceResponse todr = this.deviceService.turnOnDevice(turnOnDeviceRequest.getDeviceCode());
+    public ResponseEntity<DeviceStatusResponse> turnOnDevice(@RequestBody @Valid DeviceStatusRequest deviceStatusRequest) {
+        DeviceStatusResponse todr = this.deviceService.turnOnDevice(deviceStatusRequest.getDeviceCode());
+        return new ResponseEntity<>(todr,HttpStatus.OK);
+    }
+
+    @PostMapping(path ="/turn-off", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DeviceStatusResponse> turnOffDevice(@RequestBody @Valid DeviceStatusRequest deviceStatusRequest) {
+        DeviceStatusResponse todr = this.deviceService.turnOffDevice(deviceStatusRequest.getDeviceCode());
         return new ResponseEntity<>(todr,HttpStatus.OK);
     }
 }

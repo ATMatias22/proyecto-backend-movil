@@ -1,4 +1,4 @@
-package com.sensor.app.sensor_app_movil.dto.device.response;
+package com.sensor.app.sensor_app_movil.dto.arduino.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TurnOnDeviceResponse {
+public class ArduinoDeviceStatusResponse {
 
     private String message;
     private Boolean on;
+
 }
