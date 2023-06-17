@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TurnOnDeviceRequest {
+public class DeviceStatusRequest {
 
     @NotBlank(message = "El codigo no puede ser nulo ni vacio")
     private String deviceCode;
