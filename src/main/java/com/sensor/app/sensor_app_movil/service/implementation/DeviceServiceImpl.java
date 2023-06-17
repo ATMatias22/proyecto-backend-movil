@@ -606,53 +606,11 @@ public class DeviceServiceImpl implements IDeviceService {
 
     @Override
     public DeviceStatusResponse turnOnDevice(String deviceCode) {
-
-        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Device device = this.getByDeviceCode(deviceCode);
-
-        if (device.getFkUser() != null) {
-            if (device.getFkUser().getIdUser() != mu.getId()) {
-                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede encender el dispositivo, solo el dueño puede hacerlo");
-            }
-        } else {
-            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
-        }
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
-
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(headers);
-
-
-        ResponseEntity<ArduinoDeviceStatusResponse> httpResponse = null;
-
-        try {
-            httpResponse = restTemplate.exchange("http://192.168.0.254:80/encender", HttpMethod.POST, requestEntity, ArduinoDeviceStatusResponse.class);
-        } catch (HttpClientErrorException.NotFound enf) {
-            System.out.println(enf.getMessage());
-            throw new GeneralException(HttpStatus.NOT_FOUND, "Arduino no encontro el recurso");
-        } catch (HttpClientErrorException.Forbidden efb) {
-            System.out.println(efb.getMessage());
-            throw new GeneralException(HttpStatus.FORBIDDEN, "Arduino no te permite el acceso");
-        } catch (ResourceAccessException rae) {
-            //ATRAPA ERROR 5XX
-            System.out.println(rae.getMessage());
-            throw new GeneralException(HttpStatus.NOT_FOUND, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
-        }
-
-        ArduinoDeviceStatusResponse arduinoDeviceStatusResponse = httpResponse.getBody();
-
-        // Obtener el mensaje y el estado de la respuesta
-        String responseMessage = arduinoDeviceStatusResponse.getMessage();
-        Boolean isOn = arduinoDeviceStatusResponse.getOn();
-
-        // Utilizar los datos obtenidos según sea necesario
-        System.out.println("Mensaje: " + responseMessage);
-        System.out.println("On: " + isOn);
-
-        return new DeviceStatusResponse(responseMessage,isOn);
-
+        return this.manageDeviceState(deviceCode,true);
+    }
+    @Override
+    public DeviceStatusResponse turnOffDevice(String deviceCode) {
+        return this.manageDeviceState(deviceCode,false);
     }
 
 
@@ -798,6 +756,60 @@ public class DeviceServiceImpl implements IDeviceService {
 
     public Device getByDeviceCode(String deviceCode) {
         return this.deviceDao.getByDeviceCode(deviceCode).orElseThrow(() -> new GeneralException(HttpStatus.BAD_REQUEST, "No se encontro el dispositivo con codigo: " + deviceCode));
+    }
+
+
+
+    private DeviceStatusResponse manageDeviceState(String deviceCode, boolean on) {
+
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Device device = this.getByDeviceCode(deviceCode);
+
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede cambiar el estado del dispositivo, solo el dueño puede hacerlo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
+        }
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "hola");
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(headers);
+
+
+        ResponseEntity<ArduinoDeviceStatusResponse> httpResponse = null;
+
+        String url = on ? "http://192.168.0.254:80/encender":"http://192.168.0.254:80/apagar" ;
+
+        try {
+            httpResponse = restTemplate.exchange(url, HttpMethod.POST, requestEntity, ArduinoDeviceStatusResponse.class);
+        } catch (HttpClientErrorException.NotFound enf) {
+            System.out.println(enf.getMessage());
+            throw new GeneralException(HttpStatus.NOT_FOUND, "Arduino no encontro el recurso");
+        } catch (HttpClientErrorException.Forbidden efb) {
+            System.out.println(efb.getMessage());
+            throw new GeneralException(HttpStatus.FORBIDDEN, "Arduino no te permite el acceso");
+        } catch (ResourceAccessException rae) {
+            //ATRAPA ERROR 5XX
+            System.out.println(rae.getMessage());
+            throw new GeneralException(HttpStatus.NOT_FOUND, "No se pudo establecer conexion con el arduino, probablemente no este conectado a una fuente de energia o no tenga WiFi conectado");
+        }
+
+        ArduinoDeviceStatusResponse arduinoDeviceStatusResponse = httpResponse.getBody();
+
+        // Obtener el mensaje y el estado de la respuesta
+        String responseMessage = arduinoDeviceStatusResponse.getMessage();
+        Boolean isOn = arduinoDeviceStatusResponse.getOn();
+
+        // Utilizar los datos obtenidos según sea necesario
+        System.out.println("Mensaje: " + responseMessage);
+        System.out.println("On: " + isOn);
+
+        return new DeviceStatusResponse(responseMessage,isOn);
+
     }
 
 

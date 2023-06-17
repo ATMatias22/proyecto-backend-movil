@@ -165,4 +165,11 @@ public class DeviceController {
         DeviceStatusResponse todr = this.deviceService.turnOnDevice(deviceStatusRequest.getDeviceCode());
         return new ResponseEntity<>(todr,HttpStatus.OK);
     }
+
+    @PostMapping(path ="/turn-off", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DeviceStatusResponse> turnOffDevice(@RequestBody @Valid DeviceStatusRequest deviceStatusRequest) {
+        DeviceStatusResponse todr = this.deviceService.turnOffDevice(deviceStatusRequest.getDeviceCode());
+        return new ResponseEntity<>(todr,HttpStatus.OK);
+    }
 }

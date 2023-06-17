@@ -52,6 +52,7 @@ public interface IDeviceService {
     void changeWiFi(String deviceCode, String ssid, String password);
 
     DeviceStatusResponse turnOnDevice(String deviceCode);
+    DeviceStatusResponse turnOffDevice(String deviceCode);
 
 
 }
