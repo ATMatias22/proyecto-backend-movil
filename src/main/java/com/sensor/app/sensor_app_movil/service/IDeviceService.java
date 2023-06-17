@@ -4,6 +4,7 @@ package com.sensor.app.sensor_app_movil.service;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.TurnOnDeviceResponse;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
 import com.sensor.app.sensor_app_movil.entity.Observer;
@@ -49,6 +50,8 @@ public interface IDeviceService {
     Device getByDeviceCode(String deviceCode);
     
     void changeWiFi(String deviceCode, String ssid, String password);
+
+    TurnOnDeviceResponse turnOnDevice(String deviceCode);
 
 
 }

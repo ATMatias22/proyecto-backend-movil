@@ -5,6 +5,7 @@ import com.sensor.app.sensor_app_movil.dto.device.request.*;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
+import com.sensor.app.sensor_app_movil.dto.device.response.TurnOnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.informativemessage.response.InformativeMessageResponse;
 import com.sensor.app.sensor_app_movil.dto.observer.response.ObserverResponse;
 import com.sensor.app.sensor_app_movil.dto.wifi.request.ChangeWiFiRequest;
@@ -156,5 +157,12 @@ public class DeviceController {
     public ResponseEntity<Void> changeDeviceWiFi(@RequestBody @Valid ChangeWiFiRequest changeWiFiRequest) {
         this.deviceService.changeWiFi(changeWiFiRequest.getDeviceCode(), changeWiFiRequest.getSsid(), changeWiFiRequest.getPassword());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(path ="/turn-on", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<TurnOnDeviceResponse> turnOnDevice(@RequestBody @Valid TurnOnDeviceRequest turnOnDeviceRequest) {
+        TurnOnDeviceResponse todr = this.deviceService.turnOnDevice(turnOnDeviceRequest.getDeviceCode());
+        return new ResponseEntity<>(todr,HttpStatus.OK);
     }
 }
