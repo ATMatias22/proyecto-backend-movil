@@ -6,6 +6,6 @@ public class DateConstants {
     private DateConstants(){
 
     }
-    public static final String FORMAT_DATE = "dd/MM/yyyy";
+    public static final String FORMAT_DATE = "yyyy/MM/dd";
 
 }
