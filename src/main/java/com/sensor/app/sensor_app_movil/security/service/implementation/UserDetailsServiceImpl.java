@@ -3,7 +3,7 @@ package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.exception.constants.ExceptionMessage;
-import com.sensor.app.sensor_app_movil.security.dto.MainUser;
+import com.sensor.app.sensor_app_movil.security.MainUser;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.security.exception.UnabledAccountException;
 import com.sensor.app.sensor_app_movil.security.service.IConfirmationTokenService;

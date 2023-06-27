@@ -3,7 +3,7 @@ package com.sensor.app.sensor_app_movil.service.implementation;
 import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenDevicePasswordChange;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
-import com.sensor.app.sensor_app_movil.repository.dao.IConfirmationTokenDevicePasswordChangeDao;
+import com.sensor.app.sensor_app_movil.dao.IConfirmationTokenDevicePasswordChangeDao;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.service.IConfirmationTokenDevicePasswordChangeService;
 import org.springframework.beans.factory.annotation.Autowired;

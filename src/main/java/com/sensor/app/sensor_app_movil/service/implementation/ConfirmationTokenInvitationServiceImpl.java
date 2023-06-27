@@ -4,7 +4,7 @@ import com.sensor.app.sensor_app_movil.entity.ConfirmationTokenInvitation;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
 import com.sensor.app.sensor_app_movil.security.entity.User;
-import com.sensor.app.sensor_app_movil.repository.dao.IConfirmationTokenInvitationDao;
+import com.sensor.app.sensor_app_movil.dao.IConfirmationTokenInvitationDao;
 import com.sensor.app.sensor_app_movil.service.IConfirmationTokenInvitationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
