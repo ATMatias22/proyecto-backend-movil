@@ -4,15 +4,12 @@ package com.sensor.app.sensor_app_movil.service.implementation;
 import com.sensor.app.sensor_app_movil.entity.Device;
 import com.sensor.app.sensor_app_movil.entity.InformativeMessage;
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
-import com.sensor.app.sensor_app_movil.repository.dao.IInformativeMessageDao;
-import com.sensor.app.sensor_app_movil.security.dto.MainUser;
+import com.sensor.app.sensor_app_movil.dao.IInformativeMessageDao;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import com.sensor.app.sensor_app_movil.service.IInformativeMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

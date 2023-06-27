@@ -1,7 +1,7 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.*;
-import com.sensor.app.sensor_app_movil.security.dto.userdto.response.UserLoggedInResponse;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.*;
+import com.sensor.app.sensor_app_movil.security.dto.user.response.UserLoggedInResponse;
 import com.sensor.app.sensor_app_movil.security.mappers.UserMapper;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import jakarta.validation.Valid;

@@ -2,11 +2,11 @@ package com.sensor.app.sensor_app_movil.security.service.implementation;
 
 
 import com.sensor.app.sensor_app_movil.exception.GeneralException;
-import com.sensor.app.sensor_app_movil.security.dto.MainUser;
+import com.sensor.app.sensor_app_movil.security.MainUser;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenEmailChange;
 import com.sensor.app.sensor_app_movil.security.entity.ConfirmationTokenPasswordChange;
 import com.sensor.app.sensor_app_movil.security.entity.User;
-import com.sensor.app.sensor_app_movil.security.repository.dao.IUserDao;
+import com.sensor.app.sensor_app_movil.security.dao.IUserDao;
 import com.sensor.app.sensor_app_movil.security.service.*;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;

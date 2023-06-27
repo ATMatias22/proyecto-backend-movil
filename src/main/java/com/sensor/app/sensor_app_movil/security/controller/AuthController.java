@@ -1,9 +1,9 @@
 package com.sensor.app.sensor_app_movil.security.controller;
 
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.ConfirmRegisterUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.ConfirmRegisterUserRequest;
 import com.sensor.app.sensor_app_movil.security.jwt.dto.JwtDto;
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.LoginUserRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.NewUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.LoginUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.NewUserRequest;
 import com.sensor.app.sensor_app_movil.security.mappers.UserMapper;
 import com.sensor.app.sensor_app_movil.security.service.IAuthService;
 import jakarta.validation.Valid;

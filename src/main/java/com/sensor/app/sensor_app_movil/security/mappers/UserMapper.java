@@ -1,10 +1,10 @@
 package com.sensor.app.sensor_app_movil.security.mappers;
 
 
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.LoginUserRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.ModifyDataRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userdto.request.NewUserRequest;
-import com.sensor.app.sensor_app_movil.security.dto.userdto.response.UserLoggedInResponse;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.LoginUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.ModifyDataRequest;
+import com.sensor.app.sensor_app_movil.security.dto.user.request.NewUserRequest;
+import com.sensor.app.sensor_app_movil.security.dto.user.response.UserLoggedInResponse;
 import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.utils.date.StringToLocalDateAndViceVersa;
 import org.mapstruct.Mapper;
