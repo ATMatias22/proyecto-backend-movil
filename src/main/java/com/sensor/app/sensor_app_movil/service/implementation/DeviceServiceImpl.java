@@ -190,7 +190,7 @@ public class DeviceServiceImpl implements IDeviceService {
             );
             this.confirmationTokenInvitationService.saveConfirmationTokenInvitation(cti);
         }
-        String link = "http://localhost:8080/app_movil_sensor/api/device/confirm-invitation?token=" + token;
+        String link = "http://localhost:8081/app_movil_sensor/api/device/confirm-invitation?token=" + token;
         emailService.send("Invitacion al dispositivo", email, buildEmailForConfirmInvitation(link, mu.getUsername()));
 
 
