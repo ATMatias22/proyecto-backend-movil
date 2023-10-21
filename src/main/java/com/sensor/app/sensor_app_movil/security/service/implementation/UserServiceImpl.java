@@ -105,7 +105,7 @@ public class UserServiceImpl implements IUserService {
 
         user.setName(modifiedUser.getName());
         user.setLastname(modifiedUser.getLastname());
-        user.setNationality(modifiedUser.getNationality());
+        user.setCountry(modifiedUser.getCountry());
         user.setDateOfBirth(modifiedUser.getDateOfBirth());
         user.setUpdated(LocalDateTime.now());
 

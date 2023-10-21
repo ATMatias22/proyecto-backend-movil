@@ -17,6 +17,6 @@ public class UserLoggedInResponse {
 
     private String dateOfBirth;
 
-    private String nationality;
+    private String country;
 
 }

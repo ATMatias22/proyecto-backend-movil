@@ -23,7 +23,7 @@ public abstract class UserMapper {
             @Mapping(source = "lastname", target = "lastname"),
             @Mapping(source = "email", target = "email"),
             @Mapping(target = "dateOfBirth", expression = "java(stdv.getString(user.getDateOfBirth()))" ),
-            @Mapping(source = "nationality", target = "nationality"),
+            @Mapping(source = "country", target = "country"),
     })
     public abstract UserLoggedInResponse userEntityToUserLoggedInResponse(User user);
 
@@ -33,7 +33,7 @@ public abstract class UserMapper {
             @Mapping(source = "lastname", target = "lastname"),
             @Mapping(source = "email", target = "email"),
             @Mapping(target = "dateOfBirth", expression = "java(stdv.getLocalDate(modifyDataRequest.getDateOfBirth()))" ),
-            @Mapping(source = "nationality", target = "nationality"),
+            @Mapping(source = "country", target = "country"),
     })
     public abstract User modifyDataRequestToUserEntity(ModifyDataRequest modifyDataRequest);
 
@@ -44,7 +44,7 @@ public abstract class UserMapper {
             @Mapping(source = "email", target = "email"),
             @Mapping(source = "password", target = "password"),
             @Mapping(target = "dateOfBirth", expression = "java(stdv.getLocalDate(newUser.getDateOfBirth()))" ),
-            @Mapping(source = "nationality", target = "nationality"),
+            @Mapping(source = "country", target = "country"),
     })
     public abstract User newUserRequestToUserEntity(NewUserRequest newUser);
 

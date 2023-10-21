@@ -34,8 +34,8 @@ public class User implements Cloneable {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name="nationality", length = 60, nullable = false)
-    private String nationality;
+    @Column(name="country", length = 60, nullable = false)
+    private String country;
 
     @Column(name="password", length = 75, nullable = false)
     private String password;
