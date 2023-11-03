@@ -16,10 +16,10 @@ public class JwtProvider {
     private static final String EMAIL_CLAIM = "email";
     private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
-    @Value("${jwt.secret}")
+    @Value("${app.jwt-secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${app.jwt.expiration-milliseconds}")
     private Long expiration;
 
     @Value("${app.jwt.issuer}")
