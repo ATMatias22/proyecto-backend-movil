@@ -16,7 +16,7 @@ public class JwtProvider {
     private static final String EMAIL_CLAIM = "email";
     private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
-    @Value("${app.jwt-secret}")
+    @Value("${app.jwt.secret}")
     private String secret;
 
     @Value("${app.jwt.expiration-milliseconds}")
