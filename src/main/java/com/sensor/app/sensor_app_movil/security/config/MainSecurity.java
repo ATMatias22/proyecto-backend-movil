@@ -1,8 +1,10 @@
 package com.sensor.app.sensor_app_movil.security.config;
 
+import com.sensor.app.sensor_app_movil.filter.AppWebTokenFilter;
 import com.sensor.app.sensor_app_movil.security.jwt.JwtTokenFilter;
 import com.sensor.app.sensor_app_movil.security.service.implementation.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +33,24 @@ public class MainSecurity  {
     public JwtTokenFilter jwtTokenFilter(){
         return new JwtTokenFilter();
     }
+
+    @Bean
+    public AppWebTokenFilter appWebTokenFilter(){
+        return new AppWebTokenFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean<AppWebTokenFilter> registrationAppebTokenFilter(){
+        FilterRegistrationBean<AppWebTokenFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(appWebTokenFilter());
+        registrationBean.addUrlPatterns("/device");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
+
 
 
     @Bean

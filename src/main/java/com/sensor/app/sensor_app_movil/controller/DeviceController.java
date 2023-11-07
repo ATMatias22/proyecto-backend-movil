@@ -12,6 +12,7 @@ import com.sensor.app.sensor_app_movil.dto.wifi.request.ChangeWiFiRequest;
 import com.sensor.app.sensor_app_movil.mappers.DeviceMapper;
 import com.sensor.app.sensor_app_movil.mappers.InformativeMessageMapper;
 import com.sensor.app.sensor_app_movil.mappers.ObserverMapper;
+import com.sensor.app.sensor_app_movil.dto.device.request.AddDeviceFromWebAdminRequest;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,4 +173,11 @@ public class DeviceController {
         DeviceStatusResponse todr = this.deviceService.turnOffDevice(deviceStatusRequest.getDeviceCode());
         return new ResponseEntity<>(todr,HttpStatus.OK);
     }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> addDevice(@RequestBody @Valid AddDeviceFromWebAdminRequest addDeviceFromWebAdminRequest) {
+        this.deviceService.saveDevice(this.deviceMapper.addDeviceFromWebAdminRequestToDevice(addDeviceFromWebAdminRequest));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

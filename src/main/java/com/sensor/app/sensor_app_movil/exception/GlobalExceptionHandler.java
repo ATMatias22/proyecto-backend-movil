@@ -161,6 +161,26 @@ public class GlobalExceptionHandler  {
     }
 
 
+    @ExceptionHandler(JwtAppWebException.class)
+    public ResponseEntity<HashMap<String, DetailsError>> httpRequestMethodNotSupportedException(JwtAppWebException exception, WebRequest webRequest) {
+
+        logger.info("estoy en JwtAppWebException");
+
+        HashMap<String, DetailsError> dataError = new HashMap<>();
+
+
+        DetailsError detailsError = new DetailsError(new Date(), exception.getMessage(),
+                webRequest.getDescription(false), HttpStatus.FORBIDDEN.value());
+
+        dataError.put(ERROR, detailsError);
+
+        return new ResponseEntity<>(dataError, HttpStatus.NOT_FOUND);
+    }
+
+
+
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HashMap<String, DetailsError>> exceptionHandler(Exception exception, WebRequest webRequest) {
 
@@ -176,7 +196,6 @@ public class GlobalExceptionHandler  {
 
         return new ResponseEntity<>(dataError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 
 
 
