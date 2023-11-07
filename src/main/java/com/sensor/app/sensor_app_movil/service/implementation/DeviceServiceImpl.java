@@ -613,6 +613,14 @@ public class DeviceServiceImpl implements IDeviceService {
         return this.manageDeviceState(deviceCode,false);
     }
 
+    @Override
+    public void saveDevice(Device device) {
+
+        device.setName(device.getDeviceCode());
+        this.deviceDao.save(device);
+
+    }
+
 
     private String buildEmailForConfirmInvitation(String link, String email) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +

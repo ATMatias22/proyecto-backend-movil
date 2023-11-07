@@ -1,6 +1,7 @@
 package com.sensor.app.sensor_app_movil.mappers;
 
 
+import com.sensor.app.sensor_app_movil.dto.device.request.AddDeviceFromWebAdminRequest;
 import com.sensor.app.sensor_app_movil.dto.device.response.ObservedDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDeviceResponse;
 import com.sensor.app.sensor_app_movil.dto.device.response.OwnDevicesResponse;
@@ -48,6 +49,19 @@ public abstract class DeviceMapper {
             @Mapping(source = "message", target = "message"),
     })
     public abstract ObservedDeviceResponse toObservedDeviceResponse (Device device, Boolean onDevice, Boolean onWifi, String message);
+
+
+    @Mappings({
+            @Mapping(source = "addDeviceFromWebAdminRequest.deviceCode", target = "deviceCode"),
+            @Mapping(source = "addDeviceFromWebAdminRequest.password", target = "password"),
+            @Mapping(target = "device.linkedPersons", expression = "java(observerService.countByDevice(device))" ),
+            @Mapping(target = "idDevice", ignore = true),
+            @Mapping(target = "name", ignore = true),
+            @Mapping(target = "created", ignore = true),
+            @Mapping(target = "updated", ignore = true),
+            @Mapping(target = "fkUser", ignore = true),
+    })
+    public abstract Device addDeviceFromWebAdminRequestToDevice (AddDeviceFromWebAdminRequest addDeviceFromWebAdminRequest);
 
 
 

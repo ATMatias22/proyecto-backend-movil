@@ -54,5 +54,5 @@ public interface IDeviceService {
     DeviceStatusResponse turnOnDevice(String deviceCode);
     DeviceStatusResponse turnOffDevice(String deviceCode);
 
-
+    void saveDevice(Device device);
 }
