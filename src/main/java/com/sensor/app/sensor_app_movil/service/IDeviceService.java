@@ -55,4 +55,6 @@ public interface IDeviceService {
     DeviceStatusResponse turnOffDevice(String deviceCode);
 
     void saveDevice(Device device);
+
+    void changeIpAndPortInDevice(String deviceCode, String ip, String port);
 }

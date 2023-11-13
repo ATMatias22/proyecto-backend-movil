@@ -821,4 +821,25 @@ public class DeviceServiceImpl implements IDeviceService {
     }
 
 
+    public void changeIpAndPortInDevice(String deviceCode, String ip, String port) {
+
+        Device device = this.getByDeviceCode(deviceCode);
+        MainUser mu = (MainUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (device.getFkUser() != null) {
+            if (device.getFkUser().getIdUser() != mu.getId()) {
+                throw new GeneralException(HttpStatus.UNAUTHORIZED, "No puede agregar ip y puerto, solo el dueño puede hacerlo");
+            }
+        } else {
+            throw new GeneralException(HttpStatus.UNAUTHORIZED, DEVICE_WITHOUT_OWNER_MESSAGE);
+        }
+
+        device.setIp(ip);
+        device.setPort(port);
+
+        this.deviceDao.save(device);
+    }
+
+
+
 }

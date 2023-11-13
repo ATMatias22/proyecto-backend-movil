@@ -180,4 +180,11 @@ public class DeviceController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping(path ="/change-device-ip-port", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changeIpAndPortInDevice(@RequestBody @Valid ChangeIpPortRequest changeIpPortRequest) {
+        this.deviceService.changeIpAndPortInDevice(changeIpPortRequest.getDeviceCode(), changeIpPortRequest.getIp(), changeIpPortRequest.getPort());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
