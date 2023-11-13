@@ -27,6 +27,11 @@ public class Device {
     @Column(name="name", length = 90, nullable = false)
     private String name;
 
+    @Column(name="ip", nullable = true)
+    private String ip;
+
+    @Column(name="port", nullable = true)
+    private String port;
 
     @Column(name="password", length = 75, nullable = false)
     private String password;
