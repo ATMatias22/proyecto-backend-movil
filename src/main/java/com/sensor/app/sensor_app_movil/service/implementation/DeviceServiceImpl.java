@@ -617,6 +617,7 @@ public class DeviceServiceImpl implements IDeviceService {
     public void saveDevice(Device device) {
 
         device.setName(device.getDeviceCode());
+        device.setPassword(passwordEncoder.encode(device.getPassword()));
         this.deviceDao.save(device);
 
     }
