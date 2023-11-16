@@ -66,6 +66,9 @@ public class DeviceServiceImpl implements IDeviceService {
     @Value("${arduino.url.protocol}")
     private String arduinoProtocol;
 
+    @Value("${app.domain}")
+    private String appDomain;
+
     private static final String DEVICE_WITHOUT_OWNER_MESSAGE = "Este dispositivo no tiene dueño";
 
 
@@ -196,7 +199,7 @@ public class DeviceServiceImpl implements IDeviceService {
             );
             this.confirmationTokenInvitationService.saveConfirmationTokenInvitation(cti);
         }
-        String link = "http://localhost:8081/app_movil_sensor/api/device/confirm-invitation?token=" + token;
+        String link = appDomain + "/app_movil_sensor/api/device/confirm-invitation?token=" + token;
         emailService.send("Invitacion al dispositivo", email, buildEmailForConfirmInvitation(link, mu.getUsername()));
 
 
