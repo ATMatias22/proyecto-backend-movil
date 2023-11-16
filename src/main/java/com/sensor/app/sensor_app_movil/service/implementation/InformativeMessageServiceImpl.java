@@ -8,6 +8,7 @@ import com.sensor.app.sensor_app_movil.dao.IInformativeMessageDao;
 import com.sensor.app.sensor_app_movil.service.IDeviceService;
 import com.sensor.app.sensor_app_movil.service.IInformativeMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class InformativeMessageServiceImpl implements IInformativeMessageService
     private IInformativeMessageDao informativeMessageDao;
 
     private final IDeviceService deviceService;
+
+    @Value("${arduino.secret}")
+    private String arduinoSecret;
 
     public InformativeMessageServiceImpl(@Lazy IDeviceService deviceService) {
         this.deviceService = deviceService;
@@ -45,7 +49,7 @@ public class InformativeMessageServiceImpl implements IInformativeMessageService
             throw new GeneralException(HttpStatus.BAD_REQUEST, "El dispositivo no tiene dueño");
         } else {
 
-            if(token.equals("hola")){
+            if(token.equals(arduinoSecret)){
                 InformativeMessage informativeMesage = new InformativeMessage();
                 informativeMesage.setMessage(message);
                 informativeMesage.setFkDevice(device);

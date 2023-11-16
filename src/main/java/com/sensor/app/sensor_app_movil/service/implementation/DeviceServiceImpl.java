@@ -69,6 +69,9 @@ public class DeviceServiceImpl implements IDeviceService {
     @Value("${app.domain}")
     private String appDomain;
 
+    @Value("${arduino.secret}")
+    private String arduinoSecret;
+
     private static final String DEVICE_WITHOUT_OWNER_MESSAGE = "Este dispositivo no tiene dueño";
 
 
@@ -108,7 +111,7 @@ public class DeviceServiceImpl implements IDeviceService {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
         HttpEntity<ArduinoDeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
@@ -319,7 +322,7 @@ public class DeviceServiceImpl implements IDeviceService {
         List<Device> devices = this.deviceDao.getAllByFkUser(user, pageable);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
         HttpEntity<ArduinoDeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
@@ -385,7 +388,7 @@ public class DeviceServiceImpl implements IDeviceService {
         });
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
         HttpEntity<ArduinoDeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
@@ -581,7 +584,7 @@ public class DeviceServiceImpl implements IDeviceService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
 
 
         Map<String, String> body = new HashMap<>();
@@ -802,7 +805,7 @@ public class DeviceServiceImpl implements IDeviceService {
 
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(headers);
 
