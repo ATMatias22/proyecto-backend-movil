@@ -18,6 +18,7 @@ import com.sensor.app.sensor_app_movil.service.*;
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +63,15 @@ public class DeviceServiceImpl implements IDeviceService {
     @Autowired
     private DeviceMapper deviceMapper;
 
+    @Value("${arduino.url.protocol}")
+    private String arduinoProtocol;
+
+    @Value("${app.domain}")
+    private String appDomain;
+
+    @Value("${arduino.secret}")
+    private String arduinoSecret;
+
     private static final String DEVICE_WITHOUT_OWNER_MESSAGE = "Este dispositivo no tiene dueño";
 
 
@@ -101,16 +111,18 @@ public class DeviceServiceImpl implements IDeviceService {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
         HttpEntity<ArduinoDeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
         ResponseEntity<ArduinoDeviceStatusResponse> responseDeviceStatus = null;
         ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
+
+        String domain = arduinoProtocol + device.getIp() + ":" + device.getPort();
         try {
-            responseDeviceStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<ArduinoDeviceStatusResponse>() {
+            responseDeviceStatus = restTemplate.exchange(domain + "/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<ArduinoDeviceStatusResponse>() {
             });
-            responseDeviceWiFiStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
+            responseDeviceWiFiStatus = restTemplate.exchange(domain + "/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
             });
         } catch (HttpClientErrorException.NotFound enf) {
             System.out.println(enf.getMessage());
@@ -190,7 +202,7 @@ public class DeviceServiceImpl implements IDeviceService {
             );
             this.confirmationTokenInvitationService.saveConfirmationTokenInvitation(cti);
         }
-        String link = "http://localhost:8081/app_movil_sensor/api/device/confirm-invitation?token=" + token;
+        String link = appDomain + "/app_movil_sensor/api/device/confirm-invitation?token=" + token;
         emailService.send("Invitacion al dispositivo", email, buildEmailForConfirmInvitation(link, mu.getUsername()));
 
 
@@ -310,17 +322,20 @@ public class DeviceServiceImpl implements IDeviceService {
         List<Device> devices = this.deviceDao.getAllByFkUser(user, pageable);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
         HttpEntity<ArduinoDeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
         return devices.stream().map((device) -> {
             ResponseEntity<ArduinoDeviceStatusResponse> responseDeviceStatus = null;
             ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
+
+            String domain = arduinoProtocol + device.getIp() + ":" + device.getPort();
+
             try {
-                responseDeviceStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<ArduinoDeviceStatusResponse>() {
+                responseDeviceStatus = restTemplate.exchange(domain + "/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<ArduinoDeviceStatusResponse>() {
                 });
-                responseDeviceWiFiStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
+                responseDeviceWiFiStatus = restTemplate.exchange(domain + "/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
                 });
             } catch (HttpClientErrorException.NotFound enf) {
                 System.out.println(enf.getMessage());
@@ -373,7 +388,7 @@ public class DeviceServiceImpl implements IDeviceService {
         });
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
         HttpEntity<ArduinoDeviceStatusResponse> requestEntityDeviceStatus = new HttpEntity<>(headers);
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
@@ -381,10 +396,13 @@ public class DeviceServiceImpl implements IDeviceService {
         return devices.stream().map((device) -> {
             ResponseEntity<ArduinoDeviceStatusResponse> responseDeviceStatus = null;
             ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
+
+            String domain = arduinoProtocol + device.getIp() + ":" + device.getPort();
+
             try {
-                responseDeviceStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<ArduinoDeviceStatusResponse>() {
+                responseDeviceStatus = restTemplate.exchange(domain + "/verificar-estado-sensor", HttpMethod.GET, requestEntityDeviceStatus, new ParameterizedTypeReference<ArduinoDeviceStatusResponse>() {
                 });
-                responseDeviceWiFiStatus = restTemplate.exchange("http://192.168.0.254:80/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
+                responseDeviceWiFiStatus = restTemplate.exchange(domain + "/verificar-wifi", HttpMethod.GET, requestEntityDeviceWiFiStatus, new ParameterizedTypeReference<DeviceWiFiStatusResponse>() {
                 });
             } catch (HttpClientErrorException.NotFound enf) {
                 System.out.println(enf.getMessage());
@@ -566,7 +584,8 @@ public class DeviceServiceImpl implements IDeviceService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
+
 
         Map<String, String> body = new HashMap<>();
         body.put("ssid", ssid);
@@ -577,8 +596,10 @@ public class DeviceServiceImpl implements IDeviceService {
 
         ResponseEntity<SaveWifiResponse> httpResponse = null;
 
+        String domain = arduinoProtocol + device.getIp() + ":" + device.getPort();
+
         try {
-            httpResponse = restTemplate.exchange("http://192.168.0.254:80/wifi", HttpMethod.POST, requestEntity, SaveWifiResponse.class);
+            httpResponse = restTemplate.exchange(domain + "/wifi", HttpMethod.POST, requestEntity, SaveWifiResponse.class);
         } catch (HttpClientErrorException.NotFound enf) {
             System.out.println(enf.getMessage());
             throw new GeneralException(HttpStatus.NOT_FOUND, "Arduino no encontro el recurso");
@@ -784,14 +805,17 @@ public class DeviceServiceImpl implements IDeviceService {
 
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "hola");
+        headers.set("Authorization", arduinoSecret);
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(headers);
 
 
         ResponseEntity<ArduinoDeviceStatusResponse> httpResponse = null;
 
-        String url = on ? "http://192.168.0.254:80/encender":"http://192.168.0.254:80/apagar" ;
+        String domain = arduinoProtocol + device.getIp() + ":" + device.getPort();
+
+
+        String url = on ? domain + "/encender": domain + "/apagar" ;
 
         try {
             httpResponse = restTemplate.exchange(url, HttpMethod.POST, requestEntity, ArduinoDeviceStatusResponse.class);
