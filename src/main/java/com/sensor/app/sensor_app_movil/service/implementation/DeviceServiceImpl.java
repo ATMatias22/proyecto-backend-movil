@@ -17,6 +17,7 @@ import com.sensor.app.sensor_app_movil.security.entity.User;
 import com.sensor.app.sensor_app_movil.service.*;
 import com.sensor.app.sensor_app_movil.security.service.IEmailService;
 import com.sensor.app.sensor_app_movil.security.service.IUserService;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -327,7 +328,16 @@ public class DeviceServiceImpl implements IDeviceService {
         HttpEntity<DeviceWiFiStatusResponse> requestEntityDeviceWiFiStatus = new HttpEntity<>(headers);
 
         return devices.stream().map((device) -> {
-            ResponseEntity<ArduinoDeviceStatusResponse> responseDeviceStatus = null;
+
+            if(StringUtils.isBlank(device.getIp())){
+                return this.deviceMapper.toOwnDevicesResponse(device, null, null, "No se pudo establecer conexion con el arduino porque no tiene una IP asociada ");
+            }
+
+            if(StringUtils.isBlank(device.getPort())) {
+                return this.deviceMapper.toOwnDevicesResponse(device, null, null, "No se pudo establecer conexion con el arduino porque no tiene un puerto asociado");
+            }
+
+                ResponseEntity<ArduinoDeviceStatusResponse> responseDeviceStatus = null;
             ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
 
             String domain = arduinoProtocol + device.getIp() + ":" + device.getPort();
@@ -394,6 +404,14 @@ public class DeviceServiceImpl implements IDeviceService {
 
 
         return devices.stream().map((device) -> {
+            if(StringUtils.isBlank(device.getIp())){
+                return this.deviceMapper.toObservedDeviceResponse(device, null, null, "No se pudo establecer conexion con el arduino porque no tiene una IP asociada ");
+            }
+
+            if(StringUtils.isBlank(device.getPort())) {
+                return this.deviceMapper.toObservedDeviceResponse(device, null, null, "No se pudo establecer conexion con el arduino porque no tiene un puerto asociado");
+            }
+
             ResponseEntity<ArduinoDeviceStatusResponse> responseDeviceStatus = null;
             ResponseEntity<DeviceWiFiStatusResponse> responseDeviceWiFiStatus = null;
 
